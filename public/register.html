@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <title>Регистрация | Online Test Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; 
+      padding: 0;
+    }
+    header, footer {
+      background: #f0f0f0;
+      padding: 1rem;
+    }
+    .container {
+      max-width: 500px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      margin: 0.5rem 0 0.2rem;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select {
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+    button {
+      padding: 0.6rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .links {
+      margin-top: 1rem;
+    }
+    .links a {
+      margin-right: 1rem;
+      text-decoration: none;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h2>Online Test Generator - Регистрация</h2>
+</header>
+
+<div class="container">
+
+  <form action="/auth/register" method="POST">
+    <label for="username">Потребителско име:</label>
+    <input type="text" id="username" name="username" required />
+
+    <label for="email">Имейл:</label>
+    <input type="email" id="email" name="email" required />
+
+    <label for="password">Парола:</label>
+    <input type="password" id="password" name="password" required />
+
+    <!-- Ако искаш да задаваш роля при регистрация, може да имаш падащо меню: -->
+    <label for="role">Роля:</label>
+    <select id="role" name="role">
+      <option value="student">Студент</option>
+      <option value="admin">Администратор</option>
+    </select>
+
+    <button type="submit">Регистрирай ме</button>
+  </form>
+
+  <div class="links">
+    <a href="/login.html">Вход</a>
+    <a href="/">Начална страница</a>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2025 OnlineTestGenerator</p>
+</footer>
+
+</body>
+</html>
