@@ -3,44 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <title>Online Test Generator</title>
-  <!-- Примерен CSS (замени или допълни с твои стилове) -->
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0; 
-      padding: 0;
-    }
-    header, nav, footer {
-      background: #f0f0f0;
-      padding: 1rem;
-    }
-    nav a {
-      margin-right: 1rem;
-      text-decoration: none;
-      color: #333;
-      font-weight: bold;
-    }
-    .container {
-      max-width: 800px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
-    h1 {
-      margin-bottom: 1rem;
-    }
-    .btn {
-      display: inline-block;
-      padding: 0.5rem 1rem;
-      border: 1px solid #333;
-      background-color: #fff;
-      cursor: pointer;
-      text-decoration: none;
-      margin: 0.5rem 0;
-    }
-    .btn:hover {
-      background-color: #ccc;
-    }
-  </style>
+
+  <!-- Bootstrap CSS (без integrity за по-лесно) -->
+  <link 
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" 
+    rel="stylesheet"
+  />
+
+  <!-- Твоят собствен CSS (style.css), намира се в папка public/css/ -->
+  <link 
+    rel="stylesheet" 
+    href="css/style.css" 
+  />
 </head>
 <body>
   <header>
@@ -48,27 +22,56 @@
   </header>
 
   <nav>
-    <!-- Примерни линкове към Login и Register -->
-    <a href="login.html">Login</a>
-    <a href="register.html">Register</a>
-    <!-- Линкът за Админ панела ще бъде смислен, само ако има сесия и роли -->
-    <a href="adminPanel.html">Admin Panel</a>
+    <!-- Идентификатори за динамично показване/скриване -->
+    <a  id="loginLink" href="login.html">Login</a>
+    <a  id="registerLink" href="register.html">Register</a>
+    <a id="adminLink" href="adminPanel.html" style="display: none;">Admin Panel</a>
+    <a id="profileLink" href="profile.html" style="display: none;">Моят акаунт</a>
+    <a id="logoutLink" href="/auth/logout" style="display: none;">Изход</a>
   </nav>
 
   <div class="container">
     <h1>Добре дошли в нашата платформа</h1>
     <p>
-      Тук можете да се регистрирате и да участвате в динамично генерирани тестове по различни категории.  
+      Тук можете да се регистрирате и да участвате в динамично генерирани тестове по различни категории.
       Ако сте администратор, ще можете да създавате нови въпроси, да задавате параметри на тестове и да следите резултатите.
     </p>
-
-    <!-- Примерни бутони/линкове с call-to-action -->
-    <a class="btn" href="register.html">Регистрирай се сега</a>
-    <a class="btn" href="login.html">Влез в платформата</a>
   </div>
 
   <footer>
     <p>&copy; 2025 OnlineTestGenerator. Всички права запазени.</p>
   </footer>
+
+  <!-- Bootstrap JS (ако искаш да ползваш модали, dropdown и т.н.) -->
+  <script 
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+  </script>
+
+  <script>
+    // Когато страницата се зареди:
+    window.onload = async function() {
+      try {
+        const response = await fetch('/auth/status');
+        const data = await response.json();
+
+        if (data.loggedIn) {
+          document.getElementById('loginLink').style.display = 'none';
+          document.getElementById('registerLink').style.display = 'none';
+          document.getElementById('logoutLink').style.display = 'inline-block';
+          document.getElementById('profileLink').style.display = 'inline-block';
+
+          if (data.user.role === 'admin') {
+            document.getElementById('adminLink').style.display = 'inline-block';
+          }
+        } else {
+          document.getElementById('adminLink').style.display = 'none';
+          document.getElementById('profileLink').style.display = 'none';
+          document.getElementById('logoutLink').style.display = 'none';
+        }
+      } catch (err) {
+        console.error('Error checking auth status:', err);
+      }
+    };
+  </script>
 </body>
 </html>

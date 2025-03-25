@@ -1,0 +1,49 @@
+/* style.css */
+
+/* Основни стилове за тялото */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Header, nav, footer */
+  header, nav, footer {
+    background: #f0f0f0;
+    padding: 1rem;
+  }
+  
+  /* Линкове в навигацията */
+  nav a {
+    margin-right: 1rem;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+  }
+  
+  /* Контейнер */
+  .container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+  
+  /* Заглавия */
+  h1 {
+    margin-bottom: 1rem;
+  }
+  
+  /* Примерен бутон */
+  .btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border: 1px solid #333;
+    background-color: #fff;
+    cursor: pointer;
+    text-decoration: none;
+    margin: 0.5rem 0;
+  }
+  .btn:hover {
+    background-color: #ccc;
+  }
+  

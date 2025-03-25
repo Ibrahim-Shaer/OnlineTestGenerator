@@ -20,7 +20,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 1000 * 60 // пример: 1 minute
+    //maxAge: 1000 * 60 // пример: 1 minute
   }
 }));
 
@@ -49,4 +49,37 @@ app.get('/profile', (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
+});
+
+
+//Returns profile status
+app.get('/auth/status', (req, res) => {
+  if (!req.session.user) {
+    return res.json({ loggedIn: false });
+  }
+  // Ако има user в сесията
+  res.json({
+    loggedIn: true,
+    user: {
+      id: req.session.user.id,
+      username: req.session.user.username,
+      role: req.session.user.role
+    }
+  });
+});
+
+// authRoutes.js (или app.js)
+router.get('/status', (req, res) => {
+  if (!req.session.user) {
+    return res.json({ loggedIn: false });
+  }
+  res.json({
+    loggedIn: true,
+    user: {
+      id: req.session.user.id,
+      username: req.session.user.username,
+      role: req.session.user.role
+      // може и email, ако искаш
+    }
+  });
 });
