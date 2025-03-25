@@ -31,7 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/auth', authRoutes);
 
 // Роутове за въпроси
-app.use('/questions', questionRoutes);
+app.use('/questions', questionRoutes);w
 
 // Примерен маршрут за профил (само ако си логнат)
 app.get('/profile', (req, res) => {
@@ -68,18 +68,3 @@ app.get('/auth/status', (req, res) => {
   });
 });
 
-// authRoutes.js (или app.js)
-router.get('/status', (req, res) => {
-  if (!req.session.user) {
-    return res.json({ loggedIn: false });
-  }
-  res.json({
-    loggedIn: true,
-    user: {
-      id: req.session.user.id,
-      username: req.session.user.username,
-      role: req.session.user.role
-      // може и email, ако искаш
-    }
-  });
-});
