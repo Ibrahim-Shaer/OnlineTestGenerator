@@ -3,48 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <title>Регистрация | Online Test Generator</title>
+  <link 
+    rel="stylesheet" 
+    href="css/registerStyle.css" 
+  />
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0; 
-      padding: 0;
-    }
-    header, footer {
-      background: #f0f0f0;
+    /* Примерен стил за pop-up (toast) */
+    #toast {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background-color: #4caf50;
+      color: #fff;
       padding: 1rem;
-    }
-    .container {
-      max-width: 500px;
-      margin: 2rem auto;
-      padding: 1rem;
-    }
-    form {
-      display: flex;
-      flex-direction: column;
-    }
-    label {
-      margin: 0.5rem 0 0.2rem;
-    }
-    input[type="text"],
-    input[type="email"],
-    input[type="password"],
-    select {
-      padding: 0.5rem;
-      margin-bottom: 1rem;
-      font-size: 1rem;
-    }
-    button {
-      padding: 0.6rem;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-    .links {
-      margin-top: 1rem;
-    }
-    .links a {
-      margin-right: 1rem;
-      text-decoration: none;
-      color: #333;
+      border-radius: 4px;
+      display: none; /* по подразбиране скрит */
+      z-index: 9999;
     }
   </style>
 </head>
@@ -55,8 +29,8 @@
 </header>
 
 <div class="container">
-
-  <form action="/auth/register" method="POST">
+  <!-- Махаме action и method, за да ползваме JS fetch -->
+  <form id="registerForm">
     <label for="username">Потребителско име:</label>
     <input type="text" id="username" name="username" required />
 
@@ -66,11 +40,10 @@
     <label for="password">Парола:</label>
     <input type="password" id="password" name="password" required />
 
-    <!-- Ако искаш да задаваш роля при регистрация, може да имаш падащо меню: -->
     <label for="role">Роля:</label>
     <select id="role" name="role">
       <option value="student">Студент</option>
-      <option value="admin">Администратор</option>
+      <option value="teacher">Учител</option>
     </select>
 
     <button type="submit">Регистрирай ме</button>
@@ -85,6 +58,61 @@
 <footer>
   <p>&copy; 2025 OnlineTestGenerator</p>
 </footer>
+
+<!-- Pop-up (toast) елемент -->
+<div id="toast">Успешна регистрация!</div>
+
+<script>
+  const form = document.getElementById('registerForm');
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault(); // спираме стандартния submit
+
+    // Събираме данните от формата
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const role = document.getElementById('role').value;
+
+    try {
+      // Изпращаме POST заявка към /auth/register (очакваме JSON отговор)
+      const res = await fetch('/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, email, password, role })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        // Ако всичко е наред, показваме pop-up
+        showToast('Успешна регистрация!');
+
+        // Пренасочваме след кратка пауза (1-2 секунди)
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1500);
+      } else {
+        // Ако има грешка, показваме съобщение (напр. alert или друг pop-up)
+        alert('Грешка при регистрация: ' + (data.message || 'Unknown error'));
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Възникна грешка при връзката със сървъра.');
+    }
+  });
+
+  // Функция за показване на pop-up (toast)
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.style.display = 'block';
+
+    // Скриваме го след 2 секунди (по желание)
+    setTimeout(() => {
+      toast.style.display = 'none';
+    }, 2000);
+  }
+</script>
 
 </body>
 </html>

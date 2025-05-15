@@ -31,7 +31,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/auth', authRoutes);
 
 // Роутове за въпроси
-app.use('/questions', questionRoutes);w
+app.use('/questions', questionRoutes);
+
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+
+app.use('/uploads', express.static('uploads'));
 
 // Примерен маршрут за профил (само ако си логнат)
 app.get('/profile', (req, res) => {
@@ -45,26 +49,29 @@ app.get('/profile', (req, res) => {
   `);
 });
 
-// Стартираме сървъра
+app.get('/auth/status', (req, res) => {
+  if (!req.session.user) {
+    return res.json({ loggedIn: false });
+  }
+  res.json({
+    loggedIn: true,
+    user: {
+      id: req.session.user.id,
+      username: req.session.user.username,
+      role: req.session.user.role,
+      avatar: req.session.user.avatar || null   // 🟢 добави avatar
+    }
+  });
+});
+
+
+
+// Стартираме сървъра(трябва да е най-отдолу)
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
 
 
-//Returns profile status
-app.get('/auth/status', (req, res) => {
-  if (!req.session.user) {
-    return res.json({ loggedIn: false });
-  }
-  // Ако има user в сесията
-  res.json({
-    loggedIn: true,
-    user: {
-      id: req.session.user.id,
-      username: req.session.user.username,
-      role: req.session.user.role
-    }
-  });
-});
+
 

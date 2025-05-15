@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
+const multer = require('multer');
+const path = require('path');
 
 // Регистрация
 router.post('/register', authController.register);
@@ -20,9 +22,21 @@ router.get('/status', (req, res) => {
         id: req.session.user.id,
         username: req.session.user.username,
         role: req.session.user.role
-        // може и email, ако искаш
+        
       }
     });
   });
   
+  // Настройка на multer
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, 'public/uploads/'),
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `user_${req.session.user.id}${ext}`);
+  }
+});
+const upload = multer({ storage });
+
+router.post('/upload-avatar', upload.single('avatar'), authController.uploadAvatar);
+
 module.exports = router;
