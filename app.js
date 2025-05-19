@@ -59,7 +59,7 @@ app.get('/auth/status', (req, res) => {
       id: req.session.user.id,
       username: req.session.user.username,
       role: req.session.user.role,
-      avatar: req.session.user.avatar || null   // 🟢 добави avatar
+      avatar: req.session.user.avatar || null   r
     }
   });
 });
