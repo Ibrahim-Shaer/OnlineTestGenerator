@@ -82,13 +82,13 @@
 
       const roleButtons = document.getElementById('role-buttons');
       if (user.role === 'student') {
-        roleButtons.innerHTML = `<a href="/student/tests.html" class="btn btn-primary mt-2">Започни тест</a>`;
-      } else if (user.role === 'teacher') {
-        roleButtons.innerHTML = `<a href="/teacher/create-test.html" class="btn btn-success mt-2">Създай тест</a>`;
-      } else if (user.role === 'admin') {
         roleButtons.innerHTML = `
-          <a href="/adminPanel.html" class="btn btn-warning mt-2">Админ панел</a>
-          <a href="/admin/users.html" class="btn btn-secondary mt-2">Управление на потребители</a>
+          <a href="/student-tests.html" class="btn btn-primary mt-2">Моите тестове</a>
+        `;
+      } else if (user.role === 'teacher' || user.role === 'admin') {
+        roleButtons.innerHTML = `
+          <a href="/questions.html" class="btn btn-success mt-2">Създай въпрос</a>
+          <a href="/tests.html" class="btn btn-primary mt-2">Тестове</a>
         `;
       }
 
