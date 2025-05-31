@@ -23,8 +23,8 @@
 
   <nav>
     <!-- Идентификатори за динамично показване/скриване -->
-    <a  id="loginLink" href="login.html">Login</a>
-    <a  id="registerLink" href="register.html">Register</a>
+    <a id="loginLink" href="login.html">Login</a>
+    <a id="registerLink" href="register.html">Register</a>
     <a id="adminLink" href="adminPanel.html" style="display: none;">Admin Panel</a>
     <a id="profileLink" href="profile.html" style="display: none;">Моят акаунт</a>
     <a id="logoutLink" href="/auth/logout" style="display: none;">Изход</a>
@@ -47,31 +47,6 @@
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
   </script>
 
-  <script>
-    // Когато страницата се зареди:
-    window.onload = async function() {
-      try {
-        const response = await fetch('/auth/status');
-        const data = await response.json();
-
-        if (data.loggedIn) {
-          document.getElementById('loginLink').style.display = 'none';
-          document.getElementById('registerLink').style.display = 'none';
-          document.getElementById('logoutLink').style.display = 'inline-block';
-          document.getElementById('profileLink').style.display = 'inline-block';
-
-          if (data.user.role === 'admin') {
-            document.getElementById('adminLink').style.display = 'inline-block';
-          }
-        } else {
-          document.getElementById('adminLink').style.display = 'none';
-          document.getElementById('profileLink').style.display = 'none';
-          document.getElementById('logoutLink').style.display = 'none';
-        }
-      } catch (err) {
-        console.error('Error checking auth status:', err);
-      }
-    };
-  </script>
+  <script src="js/navbar.js"></script>
 </body>
 </html>

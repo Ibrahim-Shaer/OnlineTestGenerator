@@ -1,5 +1,7 @@
 const pool = require('../config/db');
 const bcrypt = require('bcrypt');
+const multer = require('multer');
+const path = require('path');
 
 // authController.js
 exports.register = async (req, res) => {
@@ -15,9 +17,9 @@ exports.register = async (req, res) => {
     // 2) Вмъкваме нов потребител
     const hashedPassword = await bcrypt.hash(password, 10);
     await pool.query(`
-      INSERT INTO users (name, email, password, role)
+      INSERT INTO users (username, email, password, role)
       VALUES (?, ?, ?, ?)
-    `, [username, email, password, role || 'student']);
+    `, [username, email, hashedPassword, role || 'student']);
 
     // 3) При успех връщаме JSON
     res.json({ message: 'Registration successful' });
@@ -44,7 +46,7 @@ exports.login = async (req, res) => {
     // Записваме потребителя в сесията
     req.session.user = {
       id: user.id,
-      username: user.name,        
+      username: user.username,        
       role: user.role,
       avatar: user.avatar || null 
     };
@@ -74,7 +76,7 @@ exports.logout = (req, res) => {
       console.error(err);
       return res.status(500).send('Error while logging out');
     }
-    // След като унищожим сесията, пренасочваме към login.html (или началната страница)
+    // След като унищожим сесията, пренасочваме към login.html 
     res.redirect('/');
   });
 };
@@ -87,8 +89,20 @@ exports.uploadAvatar = async (req, res) => {
 
     await pool.query('UPDATE users SET avatar = ? WHERE id = ?', [avatarPath, req.session.user.id]);
 
-    // Обновяваме сесията
-    req.session.user.avatar = avatarPath;
+    
+    const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [req.session.user.id]);
+    if (rows.length > 0) {
+      const user = rows[0];
+      req.session.user = {
+        id: user.id,
+        username: user.username,
+        role: user.role,
+        avatar: user.avatar || null
+      };
+    }
+
+    // ЛОГ: какво има в сесията след upload
+    console.log('Session after avatar upload:', req.session.user);
 
     res.json({ message: 'Avatar uploaded successfully', avatar: avatarPath });
   } catch (err) {
@@ -96,3 +110,5 @@ exports.uploadAvatar = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+

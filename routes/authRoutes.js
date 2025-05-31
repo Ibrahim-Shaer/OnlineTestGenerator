@@ -11,21 +11,22 @@ router.post('/login', authController.login);
 // Логаут (по избор)
 router.get('/logout', authController.logout);
 
-// authRoutes.js (или app.js)
 router.get('/status', (req, res) => {
-    if (!req.session.user) {
-      return res.json({ loggedIn: false });
+  // ЛОГ: какво има в сесията при заявка за статус
+  console.log('Session in /status:', req.session.user);
+  if (!req.session.user) {
+    return res.json({ loggedIn: false });
+  }
+  res.json({
+    loggedIn: true,
+    user: {
+      id: req.session.user.id,
+      username: req.session.user.username,
+      role: req.session.user.role,
+      avatar: req.session.user.avatar || null
     }
-    res.json({
-      loggedIn: true,
-      user: {
-        id: req.session.user.id,
-        username: req.session.user.username,
-        role: req.session.user.role
-        
-      }
-    });
   });
+});
   
   // Настройка на multer
 const storage = multer.diskStorage({
