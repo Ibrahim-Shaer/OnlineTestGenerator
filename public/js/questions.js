@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async function() {
-  // Проверка на роля (само teacher и admin)
+  // Checking role (only teacher and admin)
   const roleError = document.getElementById('role-error');
   const form = document.getElementById('questionForm');
   let userRole = null;
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     return;
   }
 
-  // Зареждане на категориите
+  // Loading categories
   const categorySelect = document.getElementById('category');
   try {
     const res = await fetch('/questions/categories');
@@ -36,17 +36,17 @@ document.addEventListener('DOMContentLoaded', async function() {
     categorySelect.innerHTML = '<option>Грешка при зареждане на категориите</option>';
   }
 
-  // Динамично показване на секцията за отговори
+  // Dynamically showing the answers section
   const answersSection = document.getElementById('answersSection');
   const questionType = document.getElementById('questionType');
 
   function renderAnswers() {
     answersSection.innerHTML = '';
     if (questionType.value === 'multiple_choice') {
-      // Множествен избор: динамично добавяне на отговори
+      // Multiple choice: dynamically adding answers
       const answersDiv = document.createElement('div');
       answersDiv.id = 'answersDiv';
-      answersDiv.innerHTML = '<label class="form-label">Възможни отговори:</label>';
+      answersDiv.innerHTML = '<label class="form-label">Possible answers:</label>';
       for (let i = 0; i < 2; i++) addAnswerInput(answersDiv);
       const addBtn = document.createElement('button');
       addBtn.type = 'button';
@@ -84,13 +84,13 @@ document.addEventListener('DOMContentLoaded', async function() {
       <button class="btn btn-danger" type="button">-</button>
     `;
     row.querySelector('button').onclick = () => row.remove();
-    answersDiv.insertBefore(row, answersDiv.lastElementChild); // преди бутона за добавяне
+    answersDiv.insertBefore(row, answersDiv.lastElementChild); 
   }
 
   questionType.addEventListener('change', renderAnswers);
   renderAnswers();
 
-  // Изпращане на въпроса към бекенда
+  // Sending the question to the backend
   form.addEventListener('submit', async function(e) {
     e.preventDefault();
     const questionData = {

@@ -3,13 +3,13 @@ const router = express.Router();
 const testController = require('../controllers/testController');
 const { isAuthenticated } = require('../middleware/auth');
 
-// Генериране на нов тест (пример: студентът избира категория и брой въпроси)
+// Generating a new test 
 router.post('/generate', isAuthenticated, testController.generateTest);
 
-// Записване на отговорите
+// Saving the answers
 router.post('/submit', isAuthenticated, testController.submitTestAnswers);
 
-// Преглед на резултат (примерно)
+// Viewing the result
 router.get('/:testId', isAuthenticated, testController.getTestResult);
 
 module.exports = router;

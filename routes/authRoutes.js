@@ -4,15 +4,15 @@ const authController = require('../controllers/authController');
 const multer = require('multer');
 const path = require('path');
 
-// Регистрация
+// Registration
 router.post('/register', authController.register);
-// Логин
+// Login
 router.post('/login', authController.login);
-// Логаут (по избор)
+// Logout 
 router.get('/logout', authController.logout);
 
 router.get('/status', (req, res) => {
-  // ЛОГ: какво има в сесията при заявка за статус
+  // LOG: what is in the session at the status request
   console.log('Session in /status:', req.session.user);
   if (!req.session.user) {
     return res.json({ loggedIn: false });
@@ -28,7 +28,7 @@ router.get('/status', (req, res) => {
   });
 });
   
-  // Настройка на multer
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, 'public/uploads/'),
   filename: (req, file, cb) => {

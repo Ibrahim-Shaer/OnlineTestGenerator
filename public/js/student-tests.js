@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     return;
   }
 
-  // Зареждане на тестовете
+  // Loading tests
   try {
     const response = await fetch('/student/tests');
     const tests = await response.json();

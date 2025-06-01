@@ -3,25 +3,25 @@ const bcrypt = require('bcrypt');
 const multer = require('multer');
 const path = require('path');
 
-// authController.js
+
 exports.register = async (req, res) => {
   try {
     const { username, email, password, role } = req.body;
 
-    // 1) Проверка дали email или username съществуват (ако имаш колона username):
+    //Checking if email is valid
     const [rows] = await pool.query('SELECT id FROM users WHERE email = ?', [email]);
     if (rows.length > 0) {
       return res.status(400).json({ message: 'Email already exists' });
     }
 
-    // 2) Вмъкваме нов потребител
+  
     const hashedPassword = await bcrypt.hash(password, 10);
     await pool.query(`
       INSERT INTO users (username, email, password, role)
       VALUES (?, ?, ?, ?)
     `, [username, email, hashedPassword, role || 'student']);
 
-    // 3) При успех връщаме JSON
+    
     res.json({ message: 'Registration successful' });
   } catch (err) {
     console.error(err);
@@ -43,7 +43,7 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
 
-    // Записваме потребителя в сесията
+    //Saving user in session
     req.session.user = {
       id: user.id,
       username: user.username,        
@@ -51,17 +51,17 @@ exports.login = async (req, res) => {
       avatar: user.avatar || null 
     };
 
-    // Пренасочваме според ролята
+    //Redirecting based on role
     if (user.role === 'admin') {
-      // Ако е админ, пращаме го в adminPanel.html
+      // If admin, send him to adminPanel.html
       return res.redirect('/adminPanel.html');
     } else if(user.role === 'student') {
-      // Ако е студент, пращаме го в профил (или друга страница)
+      // If student, send him to profile (or other page)
       return res.redirect('/profile');
     }
     else
     {
-      //Ако е учител го пращаме директно на страницата с въпроси
+      //If teacher, send him directly to questions page
       return res.redirect('/profile.html');
     }
   } catch (err) {
@@ -76,7 +76,7 @@ exports.logout = (req, res) => {
       console.error(err);
       return res.status(500).send('Error while logging out');
     }
-    // След като унищожим сесията, пренасочваме към login.html 
+    // After destroying the session, redirect to login.html
     res.redirect('/');
   });
 };
@@ -101,7 +101,6 @@ exports.uploadAvatar = async (req, res) => {
       };
     }
 
-    // ЛОГ: какво има в сесията след upload
     console.log('Session after avatar upload:', req.session.user);
 
     res.json({ message: 'Avatar uploaded successfully', avatar: avatarPath });

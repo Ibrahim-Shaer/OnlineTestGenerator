@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async function() {
-  // Проверка за роля
+  // Checking role
   const res = await fetch('/auth/status');
   const data = await res.json();
   if (!data.loggedIn || (data.user.role !== 'teacher' && data.user.role !== 'admin')) {
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     return;
   }
 
-  // Показване/скриване на формата за създаване на тест
+  // Showing/hiding the form for creating a test
   document.getElementById('createTestBtn').addEventListener('click', function(e) {
     e.preventDefault();
     const formDiv = document.getElementById('createTestFormDiv');
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (formDiv.style.display !== 'none') loadQuestions();
   });
 
-  // Зареждане на въпросите за формата
+  // Loading questions for the form
   async function loadQuestions() {
     const res = await fetch('/questions/all');
     const questions = await res.json();
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
   }
 
-  // Създаване на тест
+  // Creating a test
   const createTestForm = document.getElementById('createTestForm');
   if (createTestForm) {
     createTestForm.addEventListener('submit', async function(e) {
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
   }
 
-  // Зареждане на тестовете
+  // Loading tests
   try {
     const response = await fetch('/tests');
     const tests = await response.json();
@@ -96,9 +96,9 @@ document.addEventListener('DOMContentLoaded', async function() {
   }
 });
 
-// Примерна функция за изтриване (трябва да се реализира бекенд)
+//function for deletion (must be implemented in backend)
 function deleteTest(id) {
-  if (confirm('Сигурни ли сте, че искате да изтриете този тест?')) {
+  if (confirm('Are you sure you want to delete this test?')) {
     fetch(`/tests/${id}`, { method: 'DELETE' })
       .then(res => {
         if (res.ok) location.reload();

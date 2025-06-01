@@ -8,7 +8,7 @@
     href="css/registerStyle.css" 
   />
   <style>
-    /* Примерен стил за pop-up (toast) */
+    /* style for pop-up (toast) */
     #toast {
       position: fixed;
       top: 10px;
@@ -17,7 +17,7 @@
       color: #fff;
       padding: 1rem;
       border-radius: 4px;
-      display: none; /* по подразбиране скрит */
+      display: none; 
       z-index: 9999;
     }
   </style>
@@ -29,7 +29,7 @@
 </header>
 
 <div class="container">
-  <!-- Махаме action и method, за да ползваме JS fetch -->
+ 
   <form id="registerForm">
     <label for="username">Потребителско име:</label>
     <input type="text" id="username" name="username" required />
@@ -59,22 +59,22 @@
   <p>&copy; 2025 OnlineTestGenerator</p>
 </footer>
 
-<!-- Pop-up (toast) елемент -->
+<!-- Pop-up (toast) element -->
 <div id="toast">Успешна регистрация!</div>
 
 <script>
   const form = document.getElementById('registerForm');
   form.addEventListener('submit', async function(e) {
-    e.preventDefault(); // спираме стандартния submit
+    e.preventDefault(); 
 
-    // Събираме данните от формата
+    // Collecting data from the form
     const username = document.getElementById('username').value;
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const role = document.getElementById('role').value;
 
     try {
-      // Изпращаме POST заявка към /auth/register (очакваме JSON отговор)
+      // Sending POST request to /auth/register (expecting JSON response)
       const res = await fetch('/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -84,15 +84,15 @@
       const data = await res.json();
 
       if (res.ok) {
-        // Ако всичко е наред, показваме pop-up
+        // If everything is fine, we show the pop-up
         showToast('Успешна регистрация!');
 
-        // Пренасочваме след кратка пауза (1-2 секунди)
+        // Redirecting after a short pause (1-2 seconds)
         setTimeout(() => {
           window.location.href = '/';
         }, 1500);
       } else {
-        // Ако има грешка, показваме съобщение (напр. alert или друг pop-up)
+        // If there is an error, we show a message (e.g. alert or another pop-up)
         alert('Грешка при регистрация: ' + (data.message || 'Unknown error'));
       }
     } catch (err) {
@@ -101,13 +101,13 @@
     }
   });
 
-  // Функция за показване на pop-up (toast)
+  // Function for showing pop-up (toast)
   function showToast(msg) {
     const toast = document.getElementById('toast');
     toast.textContent = msg;
     toast.style.display = 'block';
 
-    // Скриваме го след 2 секунди (по желание)
+   
     setTimeout(() => {
       toast.style.display = 'none';
     }, 2000);
