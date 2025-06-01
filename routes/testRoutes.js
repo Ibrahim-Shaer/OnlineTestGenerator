@@ -12,10 +12,10 @@ router.post('/submit', isAuthenticated, testController.submitTestAnswers);
 // Viewing the result
 router.get('/:testId', isAuthenticated, testController.getTestResult);
 
-// Създаване на тест с избрани въпроси
+// Creating a test with selected questions
 router.post('/', isAuthenticated, testController.createTest);
 
-// Връща всички тестове
+// Returning all tests
 router.get('/', isAuthenticated, testController.getAllTests);
 
 module.exports = router;
