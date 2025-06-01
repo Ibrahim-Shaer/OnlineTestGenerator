@@ -6,7 +6,7 @@ const path = require('path');
 
 const authRoutes = require('./routes/authRoutes');
 const questionRoutes = require('./routes/questionRoutes');
-
+const testRoutes = require('./routes/testRoutes');
 
 const app = express();
 
@@ -24,17 +24,19 @@ app.use(session({
   }
 }));
 
-// Директория за статични файлове (HTML, CSS, JS)
+// Directory for static files (HTML, CSS, JS)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Роутове за автентикация (login, register, logout)
+// Authentication routes (login, register, logout)
 app.use('/auth', authRoutes);
 
-// Роутове за въпроси
+// Routes for questions
 app.use('/questions', questionRoutes);
 
+// Routes for tests
+app.use('/tests', testRoutes);
 
-// Примерен маршрут за профил (само ако си логнат)
+// Example profile route (only if logged in)
 app.get('/profile', (req, res) => {
   if (!req.session.user) {
     return res.redirect('/login.html');
@@ -63,7 +65,7 @@ app.get('/profile', (req, res) => {
 
 
 
-// Стартираме сървъра(трябва да е най-отдолу)
+// Start the server 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

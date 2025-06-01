@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       e.preventDefault();
       const title = document.getElementById('testTitle').value;
       const description = document.getElementById('testDescription').value;
+      const duration = document.getElementById('testDuration').value;
       const selectedQuestions = Array.from(document.querySelectorAll('input[name="questions"]:checked')).map(cb => cb.value);
 
       if (!selectedQuestions.length) {
@@ -53,7 +54,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       const res = await fetch('/tests', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, description, questions: selectedQuestions })
+        body: JSON.stringify({ title, description, duration, questions: selectedQuestions })
       });
 
       if (res.ok) {

@@ -3,6 +3,12 @@ const router = express.Router();
 const questionController = require('../controllers/questionController');
 const { isTeacherOrAdmin, isAuthenticated } = require('../middleware/auth');
 
+// ВРЪЩАНЕ НА ВСИЧКИ КАТЕГОРИИ (ТРЯБВА ДА Е ПРЕДИ :id!)
+router.get('/categories', isAuthenticated, questionController.getCategories);
+
+// ВРЪЩАНЕ НА ВСИЧКИ ВЪПРОСИ (за тестове и т.н.)
+router.get('/all', isTeacherOrAdmin, questionController.getAllQuestions);
+
 // Creating a question (POST /questions)
 router.post('/', isTeacherOrAdmin, questionController.createQuestion);
 
@@ -17,8 +23,5 @@ router.put('/:id', isTeacherOrAdmin, questionController.updateQuestion);
 
 // Deleting a question (DELETE /questions/:id)
 router.delete('/:id', isTeacherOrAdmin, questionController.deleteQuestion);
-
-// Returning all categories (GET /questions/categories)
-router.get('/categories', isAuthenticated, questionController.getCategories);
 
 module.exports = router;

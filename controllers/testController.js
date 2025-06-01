@@ -99,3 +99,50 @@ exports.getTestResult = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+// Създаване на тест с избрани въпроси
+exports.createTest = async (req, res) => {
+  try {
+    const { title, description, duration, questions } = req.body;
+    const teacher_id = req.session.user.id;
+    if (!title || !questions || !Array.isArray(questions) || questions.length === 0) {
+      return res.status(400).json({ message: 'Липсва заглавие или въпроси!' });
+    }
+    // 1. Създай теста
+    const [testResult] = await pool.query(
+      'INSERT INTO tests (title, description, duration, created_by) VALUES (?, ?, ?, ?)',
+      [title, description || '', duration || 30, teacher_id]
+    );
+    const testId = testResult.insertId;
+    // 2. Свържи въпросите с теста (таблица test_questions)
+    for (const qid of questions) {
+      await pool.query('INSERT INTO test_questions (test_id, question_id) VALUES (?, ?)', [testId, qid]);
+    }
+    res.json({ message: 'Тестът е създаден успешно!', testId });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Връща всички тестове за текущия учител или всички (ако е админ)
+exports.getAllTests = async (req, res) => {
+  try {
+    const user = req.session.user;
+    let rows;
+    if (user.role === 'admin') {
+      [rows] = await pool.query('SELECT id, title, description, duration, created_by FROM tests');
+    } else {
+      [rows] = await pool.query('SELECT id, title, description, duration, created_by FROM tests WHERE created_by = ?', [user.id]);
+    }
+    // Добавяме поле questionCount (брой въпроси в теста)
+    for (const test of rows) {
+      const [qCount] = await pool.query('SELECT COUNT(*) as cnt FROM test_questions WHERE test_id = ?', [test.id]);
+      test.questionCount = qCount[0].cnt;
+    }
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};

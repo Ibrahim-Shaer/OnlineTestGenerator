@@ -1,9 +1,10 @@
 const pool = require('../config/db');
 
+//Creating a question
 exports.createQuestion = async (req, res) => {
   try {
     const { category_id, question_text, question_type, points, answers, correct } = req.body;
-    // Ако имаш колона "created_by" в таблицата "questions", запиши кой е админът:
+    
     const created_by = req.session.user.id; 
 
     let answersJson = null;
@@ -22,6 +23,7 @@ exports.createQuestion = async (req, res) => {
   }
 };
 
+//Reading all questions
 exports.getAllQuestions = async (req, res) => {
   try {
     const [rows] = await pool.query(`
@@ -31,7 +33,7 @@ exports.getAllQuestions = async (req, res) => {
              q.category_id,
              c.name AS category_name
       FROM questions q
-      JOIN categories c ON q.category_id = c.id
+      JOIN category c ON q.category_id = c.id
     `);
     res.json(rows);
   } catch (error) {
@@ -40,7 +42,7 @@ exports.getAllQuestions = async (req, res) => {
   }
 };
 
-
+//Reading a question by ID
 exports.getQuestionById = async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM questions WHERE id = ?', [req.params.id]);
@@ -54,6 +56,7 @@ exports.getQuestionById = async (req, res) => {
   }
 };
 
+//Editing a question
 exports.updateQuestion = async (req, res) => {
   try {
     const { category_id, question_text, question_type } = req.body;
@@ -68,6 +71,7 @@ exports.updateQuestion = async (req, res) => {
   }
 };
 
+//Deleting a question
 exports.deleteQuestion = async (req, res) => {
   try {
     await pool.query('DELETE FROM questions WHERE id = ?', [req.params.id]);
@@ -78,6 +82,7 @@ exports.deleteQuestion = async (req, res) => {
   }
 };
 
+//Returning all categories
 exports.getCategories = async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT id, name FROM category');
