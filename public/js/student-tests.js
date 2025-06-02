@@ -1,15 +1,15 @@
 document.addEventListener('DOMContentLoaded', async function() {
-  // Проверка за роля
+  // Check for role
   const res = await fetch('/auth/status');
   const data = await res.json();
   if (!data.loggedIn || data.user.role !== 'student') {
-    window.location.href = '/login.html';
+    window.location.href = '/pages/login.html';
     return;
   }
 
   // Loading tests
   try {
-    const response = await fetch('/student/tests');
+    const response = await fetch('/tests');
     const tests = await response.json();
     const tbody = document.querySelector('#testsTable tbody');
     tbody.innerHTML = '';

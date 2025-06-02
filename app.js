@@ -7,6 +7,7 @@ const path = require('path');
 const authRoutes = require('./routes/authRoutes');
 const questionRoutes = require('./routes/questionRoutes');
 const testRoutes = require('./routes/testRoutes');
+const assignedTestsRoutes = require('./routes/assignedTestsRoutes');
 
 const app = express();
 
@@ -24,6 +25,11 @@ app.use(session({
   }
 }));
 
+// Home page
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/pages/index.html'));
+});
+
 // Directory for static files (HTML, CSS, JS)
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -36,10 +42,13 @@ app.use('/questions', questionRoutes);
 // Routes for tests
 app.use('/tests', testRoutes);
 
+// Routes for assigned tests
+app.use('/assigned-tests', assignedTestsRoutes);
+
 // Example profile route (only if logged in)
 app.get('/profile', (req, res) => {
   if (!req.session.user) {
-    return res.redirect('/login.html');
+    return res.redirect('/pages/login.html');
   }
   res.send(`
     <h1>Здравей, ${req.session.user.username}!</h1>
@@ -62,7 +71,6 @@ app.get('/profile', (req, res) => {
 //     }
 //   });
 // });
-
 
 
 // Start the server 

@@ -86,14 +86,58 @@ document.addEventListener('DOMContentLoaded', async function() {
           <td>${test.assignedTo || '-'}</td>
           <td>
             <a href="/edit-test.html?id=${test.id}" class="btn btn-warning btn-sm">Редактирай</a>
-            <a href="/assign-test.html?id=${test.id}" class="btn btn-info btn-sm">Възложи</a>
-            <button class="btn btn-danger btn-sm" onclick="deleteTest(${test.id})">Изтрий</button>
+            <button class="btn btn-info btn-sm" onclick="deleteTest(${test.id})">Изтрий</button>
           </td>
         </tr>
       `;
     });
   } catch (err) {
     document.querySelector('#testsTable tbody').innerHTML = '<tr><td colspan="4" class="text-center text-danger">Грешка при зареждане на тестовете.</td></tr>';
+  }
+
+  let isTeacherOrAdmin = false;
+
+  // Първо взимаме статуса на потребителя
+  fetch('/auth/status')
+    .then(res => res.json())
+    .then(status => {
+      isTeacherOrAdmin = status.loggedIn && (status.user.role === 'teacher' || status.user.role === 'admin');
+      loadTests();
+    });
+
+  function loadTests() {
+    fetch('/tests')
+      .then(res => res.json())
+      .then(tests => {
+        const tbody = document.querySelector('#testsTable tbody');
+        tbody.innerHTML = '';
+        tests.forEach(test => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${test.title}</td>
+            <td>${test.questionCount}</td>
+            <td>${test.assignedTo || '-'}</td>
+            <td>
+              ${isTeacherOrAdmin ? `<button class="btn btn-sm btn-warning assign-btn" data-id="${test.id}">Възложи</button>` : ''}
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        // Добавяме event listener-и само ако има бутони
+        if (isTeacherOrAdmin) {
+          document.querySelectorAll('.assign-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+              const testId = this.getAttribute('data-id');
+              window.location.href = `assign-test.html?test_id=${testId}`;
+            });
+          });
+        }
+
+        if (!isTeacherOrAdmin) {
+          document.getElementById('assignHeader').style.display = 'none';
+        }
+      });
   }
 });
 

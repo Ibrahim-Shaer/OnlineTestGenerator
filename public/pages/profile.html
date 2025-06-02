@@ -4,16 +4,16 @@
   <meta charset="UTF-8" />
   <title>Моят профил | Online Test Generator</title>
 
-  <!-- Bootstrap CSS -->
+
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
     rel="stylesheet"
   />
 
-  <!-- Твоят собствен CSS -->
+
   <link
     rel="stylesheet"
-    href="css/style.css"
+    href="/styles/style.css"
   />
 </head>
 <body>
@@ -23,10 +23,10 @@
 </header>
 
 <nav>
-  <a id="loginLink" href="login.html">Login</a>
-  <a id="registerLink" href="register.html">Register</a>
-  <a id="adminLink" href="adminPanel.html" style="display: none;">Admin Panel</a>
-  <a id="profileLink" href="profile.html" style="display: none;">Моят акаунт</a>
+  <a id="loginLink" href="/pages/login.html">Login</a>
+  <a id="registerLink" href="/pages/register.html">Register</a>
+  <a id="adminLink" href="/pages/adminPanel.html" style="display: none;">Admin Panel</a>
+  <a id="profileLink" href="/pages/profile.html" style="display: none;">Моят акаунт</a>
   <a id="logoutLink" href="/auth/logout" style="display: none;">Изход</a>
 </nav>
 
@@ -39,13 +39,12 @@
   <p>&copy; 2025 OnlineTestGenerator</p>
 </footer>
 
-<!-- Bootstrap JS  -->
 <script
   src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
 </script>
 
 <script>
-  // Остава само JS за профила и аватара!
+
   window.onload = async function() {
     try {
       const response = await fetch('/auth/status');
@@ -53,7 +52,7 @@
       const user = data.user;
 
       if (!data.loggedIn) {
-        window.location.href = '/login.html';
+        window.location.href = '/pages/login.html';
         return;
       }
       const profileDiv = document.getElementById('profile-info');
@@ -83,12 +82,12 @@
       const roleButtons = document.getElementById('role-buttons');
       if (user.role === 'student') {
         roleButtons.innerHTML = `
-          <a href="/student-tests.html" class="btn btn-primary mt-2">Моите тестове</a>
+          <a href="/pages/student-tests.html" class="btn btn-primary mt-2">Моите тестове</a>
         `;
       } else if (user.role === 'teacher' || user.role === 'admin') {
         roleButtons.innerHTML = `
-          <a href="/questions.html" class="btn btn-success mt-2">Създай въпрос</a>
-          <a href="/tests.html" class="btn btn-primary mt-2">Тестове</a>
+          <a href="/pages/questions.html" class="btn btn-success mt-2">Създай въпрос</a>
+          <a href="/pages/tests.html" class="btn btn-primary mt-2">Тестове</a>
         `;
       }
 
@@ -117,6 +116,6 @@
   };
 </script>
 
-<script src="js/navbar.js"></script>
+<script src="/js/navbar.js"></script>
 </body>
 </html>

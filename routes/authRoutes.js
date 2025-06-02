@@ -3,6 +3,7 @@ const router = express.Router();
 const authController = require('../controllers/authController');
 const multer = require('multer');
 const path = require('path');
+const { isAuthenticated, isTeacherOrAdmin } = require('../middleware/auth');
 
 // Registration
 router.post('/register', authController.register);
@@ -39,5 +40,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.post('/upload-avatar', upload.single('avatar'), authController.uploadAvatar);
+
+// Returns all students (only for teachers/admins)
+router.get('/students', isAuthenticated, isTeacherOrAdmin, authController.getAllStudents);
 
 module.exports = router;

@@ -54,16 +54,12 @@ exports.login = async (req, res) => {
     //Redirecting based on role
     if (user.role === 'admin') {
       // If admin, send him to adminPanel.html
-      return res.redirect('/adminPanel.html');
-    } else if(user.role === 'student') {
-      // If student, send him to profile (or other page)
-      return res.redirect('/profile');
+      return res.redirect('/pages/adminPanel.html');
+    } else if(user.role === 'student' || user.role === 'teacher') {
+      // If student or teacher, send him to profile (or other page)
+      return res.redirect('/pages/profile.html');
     }
-    else
-    {
-      //If teacher, send him directly to questions page
-      return res.redirect('/profile.html');
-    }
+    
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Internal server error' });
@@ -104,6 +100,19 @@ exports.uploadAvatar = async (req, res) => {
     console.log('Session after avatar upload:', req.session.user);
 
     res.json({ message: 'Avatar uploaded successfully', avatar: avatarPath });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Returns all students
+exports.getAllStudents = async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      'SELECT id, username, email FROM users WHERE role = "student"'
+    );
+    res.json(rows);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
