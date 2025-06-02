@@ -19,7 +19,7 @@
         </tr>
       </thead>
       <tbody>
-        <!-- JS ще попълни тук -->
+       
       </tbody>
     </table>
     <div id="noTests" class="alert alert-info" style="display:none;">Нямате възложени тестове.</div>
@@ -34,13 +34,13 @@
           return;
         }
         tests.forEach(test => {
-          // Проверка дали тестът е в разрешения период
+          // Check if the test is in the allowed period
           const now = new Date();
           const start = new Date(test.start_time);
           const end = new Date(test.end_time);
           let action = '';
           if (now >= start && now <= end && test.status === 'assigned') {
-            action = `<a href="/solve-test.html?test_id=${test.test_id}" class="btn btn-success btn-sm">Започни</a>`;
+            action = `<a href="/pages/solve-test.html?test_id=${test.test_id}" class="btn btn-success btn-sm">Започни</a>`;
           } else if (now < start) {
             action = '<span class="text-warning">Още не е започнал</span>';
           } else if (now > end) {

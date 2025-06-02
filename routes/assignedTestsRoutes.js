@@ -12,4 +12,7 @@ router.get('/mine', isAuthenticated, assignedTestsController.getAssignedTestsFor
 // Get assigned tests by current teacher
 router.get('/assigned-by-me', isAuthenticated, isTeacherOrAdmin, assignedTestsController.getAssignedTestsByTeacher);
 
+router.get('/:testId/questions', isAuthenticated, assignedTestsController.getTestQuestions);
+router.post('/:testId/submit', isAuthenticated, assignedTestsController.submitAssignedTest);
+
 module.exports = router;

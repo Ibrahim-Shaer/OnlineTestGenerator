@@ -101,17 +101,14 @@ document.addEventListener('DOMContentLoaded', async function() {
     };
     if (questionType.value === 'multiple_choice') {
       const answers = [];
-      const correct = [];
-      document.querySelectorAll('.answer-row').forEach((row, i) => {
+      document.querySelectorAll('.answer-row').forEach(row => {
         const text = row.querySelector('input[name="answerText"]').value;
         const isCorrect = row.querySelector('input[name="correctAnswer"]').checked;
-        answers.push(text);
-        if (isCorrect) correct.push(i);
+        answers.push({ answer_text: text, is_correct: isCorrect });
       });
       questionData.answers = answers;
-      questionData.correct = correct;
     } else if (questionType.value === 'true_false') {
-      questionData.correct = document.querySelector('input[name="tfAnswer"]:checked').value === 'true';
+      questionData.correct = document.querySelector('input[name="tfAnswer"]:checked').value === 'true' ? "Да" : "Не";
     } else if (questionType.value === 'open_text') {
       questionData.correct = document.getElementById('openAnswer').value;
     }

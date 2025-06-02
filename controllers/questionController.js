@@ -13,10 +13,30 @@ exports.createQuestion = async (req, res) => {
     if (correct !== undefined) correctJson = JSON.stringify(correct);
 
     const [result] = await pool.query(
-      'INSERT INTO questions (category_id, question_text, question_type, points, answers, correct) VALUES (?, ?, ?, ?, ?, ?)',
-      [category_id, question_text, question_type, points || 1, answersJson, correctJson]
+      'INSERT INTO questions (category_id, question_text, question_type, points) VALUES (?, ?, ?, ?)',
+      [category_id, question_text, question_type, points || 1]
     );
-    res.json({ message: 'Question created', questionId: result.insertId });
+    const question_id = result.insertId;
+
+    if (question_type === 'multiple_choice' && Array.isArray(answers)) {
+      for (const ans of answers) {
+        await pool.query(
+          'INSERT INTO answers (question_id, answer_text, is_correct) VALUES (?, ?, ?)',
+          [question_id, ans.answer_text, !!ans.is_correct]
+        );
+      }
+    } else if (question_type === 'true_false') {
+      const trueText = "Да";
+      const falseText = "Не";
+      await pool.query(
+        'INSERT INTO answers (question_id, answer_text, is_correct) VALUES (?, ?, ?), (?, ?, ?)',
+        [
+          question_id, trueText, correct === trueText || correct === true || correct === "true" ? 1 : 0,
+          question_id, falseText, correct === falseText || correct === false || correct === "false" ? 1 : 0
+        ]
+      );
+    }
+    res.json({ message: 'Въпросът е създаден успешно!', questionId: question_id });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
@@ -59,12 +79,40 @@ exports.getQuestionById = async (req, res) => {
 //Editing a question
 exports.updateQuestion = async (req, res) => {
   try {
-    const { category_id, question_text, question_type } = req.body;
+    const { category_id, question_text, question_type, points, answers, correct } = req.body;
+
+    // 1. Update the question itself
     await pool.query(
-      'UPDATE questions SET category_id = ?, question_text = ?, question_type = ? WHERE id = ?',
-      [category_id, question_text, question_type, req.params.id]
+      'UPDATE questions SET category_id = ?, question_text = ?, question_type = ?, points = ? WHERE id = ?',
+      [category_id, question_text, question_type, points || 1, req.params.id]
     );
-    res.json({ message: 'Question updated' });
+
+    // 2. Delete old answers
+    await pool.query('DELETE FROM answers WHERE question_id = ?', [req.params.id]);
+
+    // 3. Add new answers
+    if (question_type === 'multiple_choice' && Array.isArray(answers)) {
+      for (const ans of answers) {
+        await pool.query(
+          'INSERT INTO answers (question_id, answer_text, is_correct) VALUES (?, ?, ?)',
+          [req.params.id, ans.answer_text, !!ans.is_correct]
+        );
+      }
+    } else if (question_type === 'true_false') {
+      // correct  should be "Да" or "Не" (or true/false)
+      const trueText = "Да";
+      const falseText = "Не";
+      await pool.query(
+        'INSERT INTO answers (question_id, answer_text, is_correct) VALUES (?, ?, ?), (?, ?, ?)',
+        [
+          req.params.id, trueText, correct === trueText || correct === true || correct === "true" ? 1 : 0,
+          req.params.id, falseText, correct === falseText || correct === false || correct === "false" ? 1 : 0
+        ]
+      );
+    }
+   
+
+    res.json({ message: 'Въпросът е обновен успешно!' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
@@ -90,5 +138,21 @@ exports.getCategories = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+exports.getQuestions = async (req, res) => {
+  try {
+    const [questions] = await pool.query('SELECT * FROM questions');
+    for (let q of questions) {
+      if (q.question_type === 'multiple_choice') {
+        const [answers] = await pool.query('SELECT id, answer_text, is_correct FROM answers WHERE question_id = ?', [q.id]);
+        q.answers = answers;
+      }
+    }
+    res.json(questions);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
   }
 };
