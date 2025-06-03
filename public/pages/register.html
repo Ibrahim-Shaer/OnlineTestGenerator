@@ -2,117 +2,81 @@
 <html lang="bg">
 <head>
   <meta charset="UTF-8">
-  <title>Регистрация | Online Test Generator</title>
-  <link 
-    rel="stylesheet" 
-    href="/styles/registerStyle.css" 
-  />
-  <style>
-    /* style for pop-up (toast) */
-    #toast {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      background-color: #4caf50;
-      color: #fff;
-      padding: 1rem;
-      border-radius: 4px;
-      display: none; 
-      z-index: 9999;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Регистрация</title>
+  <link rel="stylesheet" href="/styles/style.css">
 </head>
 <body>
-
-<header>
-  <h2>Online Test Generator - Регистрация</h2>
-</header>
-
-<div class="container">
- 
-  <form id="registerForm">
-    <label for="username">Потребителско име:</label>
-    <input type="text" id="username" name="username" required />
-
-    <label for="email">Имейл:</label>
-    <input type="email" id="email" name="email" required />
-
-    <label for="password">Парола:</label>
-    <input type="password" id="password" name="password" required />
-
-    <label for="role">Роля:</label>
-    <select id="role" name="role">
-      <option value="student">Студент</option>
-      <option value="teacher">Учител</option>
-    </select>
-
-    <button type="submit">Регистрирай ме</button>
-  </form>
-
-  <div class="links">
-    <a href="/pages/login.html">Вход</a>
-    <a href="/">Начална страница</a>
+  <nav class="navbar">
+    <div>
+      <a href="/pages/index.html">Начало</a>
+      <a href="/pages/questions.html">Въпроси</a>
+      <a href="/pages/tests.html">Тестове</a>
+    </div>
+    <div>
+      <a href="/pages/login.html" id="loginBtn">Вход</a>
+    </div>
+  </nav>
+  <div class="container">
+    <h1>Регистрация</h1>
+    <form id="registerForm">
+      <label for="username">Потребителско име</label>
+      <input type="text" id="username" name="username" required>
+      <label for="email">Имейл</label>
+      <input type="email" id="email" name="email" required>
+      <label for="password">Парола</label>
+      <input type="password" id="password" name="password" required>
+      <label for="role">Роля</label>
+      <select id="role" name="role" required>
+        <option value="student">Студент</option>
+        <option value="teacher">Преподавател</option>
+      </select>
+      <button type="submit" class="btn" id="registerSubmitBtn">Регистрация</button>
+    </form>
+    <p>Вече имате акаунт? <a href="/pages/login.html">Влезте</a></p>
+    <div id="registerError" style="color:red;display:none;"></div>
   </div>
-</div>
-
-<footer>
-  <p>&copy; 2025 OnlineTestGenerator</p>
-</footer>
-
-<!-- Pop-up (toast) element -->
-<div id="toast">Успешна регистрация!</div>
-
-<script>
-  const form = document.getElementById('registerForm');
-  form.addEventListener('submit', async function(e) {
-    e.preventDefault(); 
-
-    // Collecting data from the form
-    const username = document.getElementById('username').value;
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const role = document.getElementById('role').value;
-
-    try {
-      // Sending POST request to /auth/register (expecting JSON response)
-      const res = await fetch('/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password, role })
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        // If everything is fine, we show the pop-up
-        showToast('Успешна регистрация!');
-
-        // Redirecting after a short pause (1-2 seconds)
-        setTimeout(() => {
-          window.location.href = '/';
-        }, 1500);
-      } else {
-        // If there is an error, we show a message (e.g. alert or another pop-up)
-        alert('Грешка при регистрация: ' + (data.message || 'Unknown error'));
+  <footer>
+    <p>&copy; 2025 OnlineTestGenerator</p>
+  </footer>
+  <div id="toast" style="display:none;position:fixed;top:10px;right:10px;background:#4caf50;color:#fff;padding:1rem;border-radius:4px;z-index:9999;">Успешна регистрация!</div>
+  <script src="/js/navbar.js"></script>
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const role = document.getElementById('role').value;
+      try {
+        const res = await fetch('/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, password, role })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          showToast('Успешна регистрация!');
+          setTimeout(() => {
+            window.location.href = '/pages/profile.html';
+          }, 1500);
+        } else {
+          document.getElementById('registerError').style.display = '';
+          document.getElementById('registerError').textContent = data.message || 'Грешка при регистрация!';
+        }
+      } catch (err) {
+        document.getElementById('registerError').style.display = '';
+        document.getElementById('registerError').textContent = 'Грешка при връзка със сървъра.';
       }
-    } catch (err) {
-      console.error(err);
-      alert('Възникна грешка при връзката със сървъра.');
+    });
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 2000);
     }
-  });
-
-  // Function for showing pop-up (toast)
-  function showToast(msg) {
-    const toast = document.getElementById('toast');
-    toast.textContent = msg;
-    toast.style.display = 'block';
-
-   
-    setTimeout(() => {
-      toast.style.display = 'none';
-    }, 2000);
-  }
-</script>
-<script src="/js/navbar.js"></script>
+  </script>
 </body>
 </html>

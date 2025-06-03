@@ -2,6 +2,7 @@
 <html lang="bg">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Моят профил | Online Test Generator</title>
 
 
@@ -18,16 +19,14 @@
 </head>
 <body>
 
-<header>
-  <h2>Online Test Generator</h2>
-</header>
-
-<nav>
-  <a id="loginLink" href="/pages/login.html">Login</a>
-  <a id="registerLink" href="/pages/register.html">Register</a>
-  <a id="adminLink" href="/pages/adminPanel.html" style="display: none;">Admin Panel</a>
-  <a id="profileLink" href="/pages/profile.html" style="display: none;">Моят акаунт</a>
-  <a id="logoutLink" href="/auth/logout" style="display: none;">Изход</a>
+<nav class="navbar">
+  <div>
+    <a href="/pages/index.html">Начало</a>
+  </div>
+  <div>
+    <a href="/pages/profile.html">Профил</a>
+    <button id="logoutBtn">Изход</button>
+  </div>
 </nav>
 
 <div class="container my-4">

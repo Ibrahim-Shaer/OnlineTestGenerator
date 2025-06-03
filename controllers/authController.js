@@ -43,7 +43,6 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
 
-    //Saving user in session
     req.session.user = {
       id: user.id,
       username: user.username,        
@@ -51,15 +50,7 @@ exports.login = async (req, res) => {
       avatar: user.avatar || null 
     };
 
-    //Redirecting based on role
-    if (user.role === 'admin') {
-      // If admin, send him to adminPanel.html
-      return res.redirect('/pages/adminPanel.html');
-    } else if(user.role === 'student' || user.role === 'teacher') {
-      // If student or teacher, send him to profile (or other page)
-      return res.redirect('/pages/profile.html');
-    }
-    
+    res.json({ message: 'Login successful', role: user.role });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Internal server error' });

@@ -2,70 +2,53 @@
 <html lang="bg">
 <head>
   <meta charset="UTF-8">
-  <title>Тестове | Online Test Generator</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <link rel="stylesheet" href="/styles/style.css"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тестове</title>
+  <link rel="stylesheet" href="/styles/style.css">
 </head>
 <body>
-<header>
-  <h2>Online Test Generator</h2>
-</header>
-<nav>
-  <a id="loginLink" href="/pages/login.html">Login</a>
-  <a id="registerLink" href="/pages/register.html">Register</a>
-  <a id="adminLink" href="/pages/adminPanel.html" style="display: none;">Admin Panel</a>
-  <a id="profileLink" href="/pages/profile.html" style="display: none;">Моят акаунт</a>
-  <a id="logoutLink" href="/auth/logout" style="display: none;">Изход</a>
-</nav>
-<div class="container my-4">
-  <h1>Тестове</h1>
-  <div id="role-error" class="alert alert-danger" style="display:none;"></div>
-  <a href="#" class="btn btn-success mb-3" id="createTestBtn">Създай нов тест</a>
-  <div id="createTestFormDiv" style="display:none;">
-    <div class="card card-body mb-3">
-      <h5>Създаване на нов тест</h5>
+  <nav class="navbar">
+    <div>
+      <a href="/pages/index.html">Начало</a>
+      <a href="/pages/questions.html">Въпроси</a>
+      <a href="/pages/tests.html">Тестове</a>
+    </div>
+    <div>
+      <a href="/pages/profile.html">Профил</a>
+      <a href="/pages/login.html" id="loginBtn">Вход</a>
+      <a href="/pages/register.html" id="registerBtn">Регистрация</a>
+      <button id="logoutBtn" style="display:none">Изход</button>
+    </div>
+  </nav>
+  <div class="container">
+    <h1>Тестове</h1>
+    <div id="role-error" class="alert alert-danger" style="display:none;"></div>
+    <button class="btn" id="createTestBtn">Създай нов тест</button>
+    <div id="createTestFormDiv" style="display:none; margin-top: 1em;">
       <form id="createTestForm">
-        <div class="mb-3">
-          <label for="testTitle" class="form-label">Заглавие на теста:</label>
-          <input type="text" class="form-control" id="testTitle" name="testTitle" required />
-        </div>
-        <div class="mb-3">
-          <label for="testDescription" class="form-label">Описание:</label>
-          <textarea class="form-control" id="testDescription" name="testDescription" rows="2"></textarea>
-        </div>
-        <div class="mb-3">
-          <label for="testDuration" class="form-label">Продължителност (минути):</label>
-          <input type="number" class="form-control" id="testDuration" name="testDuration" min="1" value="30" required />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Избери въпроси за теста:</label>
-          <div id="questionsList">
-          
-          </div>
-        </div>
-        <button type="submit" class="btn btn-primary">Създай тест</button>
+        <input type="text" id="testTitle" placeholder="Заглавие на теста" required style="margin-bottom:0.5em;">
+        <input type="text" id="testDescription" placeholder="Описание" style="margin-bottom:0.5em;">
+        <input type="number" id="testDuration" placeholder="Време (минути)" min="1" value="30" required style="margin-bottom:0.5em;">
+        <div id="questionsList" style="margin-bottom:0.5em;"></div>
+        <button type="submit" class="btn">Създай</button>
       </form>
     </div>
+    <table id="testsTable" class="table" style="width:100%;margin-top:2em;">
+      <thead>
+        <tr>
+          <th>Заглавие</th>
+          <th>Брой въпроси</th>
+          <th>Възложени на</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
   </div>
-  <table class="table table-bordered" id="testsTable">
-    <thead>
-      <tr>
-        <th>Тест</th>
-        <th>Брой въпроси</th>
-        <th>Възложени на</th>
-        <th>Действия</th>
-      </tr>
-    </thead>
-    <tbody>
-  
-    </tbody>
-  </table>
-</div>
-<footer>
-  <p>&copy; 2025 OnlineTestGenerator</p>
-</footer>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/js/navbar.js"></script>
-<script src="/js/tests.js"></script>
+  <footer>
+    <p>&copy; 2025 OnlineTestGenerator</p>
+  </footer>
+  <script src="/js/navbar.js"></script>
+  <script src="/js/tests.js"></script>
 </body>
 </html>

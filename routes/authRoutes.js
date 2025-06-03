@@ -11,6 +11,7 @@ router.post('/register', authController.register);
 router.post('/login', authController.login);
 // Logout 
 router.get('/logout', authController.logout);
+router.post('/logout', authController.logout);
 
 router.get('/status', (req, res) => {
   // LOG: what is in the session at the status request

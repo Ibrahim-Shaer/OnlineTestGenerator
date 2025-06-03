@@ -2,139 +2,47 @@
 <html lang="bg">
 <head>
   <meta charset="UTF-8">
-  <title>Администраторски панел | Online Test Generator</title>
-  <!-- Bootstrap CSS -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Админ панел</title>
   <link rel="stylesheet" href="/styles/style.css">
 </head>
 <body>
-
-<header class="bg-light p-3 mb-3">
+  <nav class="navbar">
+    <div>
+      <a href="/pages/index.html">Начало</a>
+      <a href="/pages/questions.html">Въпроси</a>
+      <a href="/pages/tests.html">Тестове</a>
+    </div>
+    <div>
+      <a href="/pages/profile.html">Профил</a>
+      <a href="/pages/login.html" id="loginBtn">Вход</a>
+      <a href="/pages/register.html" id="registerBtn">Регистрация</a>
+      <button id="logoutBtn" style="display:none">Изход</button>
+    </div>
+  </nav>
   <div class="container">
-    <h2 class="mb-0">Online Test Generator - Администраторски панел</h2>
-  </div>
-</header>
-
-<nav class="bg-secondary p-2">
-  <div class="container d-flex gap-3">
-    <a href="/" class="text-white text-decoration-none">Начало</a>
-    <a href="/auth/logout" class="text-white text-decoration-none">Изход</a>
-  </div>
-</nav>
-
-<div class="container my-4">
-  <h1 class="mb-4">Създаване на нов въпрос</h1>
-
- 
-  <form id="createQuestionForm" class="mb-5">
-    <div class="mb-3">
-      <label for="category_id" class="form-label">Категория (ID):</label>
-      <input type="number" id="category_id" name="category_id" class="form-control" required />
+    <h1>Админ панел</h1>
+    <div class="card">
+      <h2>Потребители</h2>
+      <table style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr><th>Потребителско име</th><th>Имейл</th><th>Роля</th><th>Действия</th></tr>
+        </thead>
+        <tbody id="usersTable"></tbody>
+      </table>
     </div>
-
-    <div class="mb-3">
-      <label for="question_text" c  lass="form-label">Текст на въпроса:</label>
-      <textarea id="question_text" name="question_text" rows="3" class="form-control" required></textarea>
+    <div class="card">
+      <h2>Категории</h2>
+      <form id="categoryForm">
+        <input type="text" id="categoryName" name="categoryName" placeholder="Нова категория" required>
+        <button type="submit" class="btn">Добави</button>
+      </form>
+      <ul id="categoriesList"></ul>
     </div>
-
-    <div class="mb-3">
-      <label for="question_type" class="form-label">Тип на въпроса:</label>
-      <select id="question_type" name="question_type" class="form-select">
-        <option value="multiple_choice">Множествен избор</option>
-        <option value="true_false">Вярно/Грешно</option>
-        <option value="open_text">Отворен отговор</option>
-      </select>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Създай въпрос</button>
-  </form>
-
-  <h2>Списък с въпроси</h2>
-  <div class="table-responsive">
-    <table id="questionsTable" class="table table-bordered">
-      <thead class="table-light">
-        <tr>
-          <th>ID</th>
-          <th>Категория</th>
-          <th>Текст</th>
-          <th>Тип</th>
-          <th>Действия</th>
-        </tr>
-      </thead>
-      <tbody>
-      
-      </tbody>
-    </table>
   </div>
-</div>
-
-<footer class="bg-light p-3 mt-5">
-  <div class="container">
-    <p class="mb-0">&copy; 2025 OnlineTestGenerator</p>
-  </div>
-</footer>
-
-
-<script
-  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
-</script>
-
-<script>
-
-function loadQuestions() {
-  fetch('/questions')
-    .then(res => res.json())
-    .then(data => {
-      const tableBody = document.getElementById('questionsTable').querySelector('tbody');
-      tableBody.innerHTML = '';
-
-      data.forEach(question => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${question.id}</td>
-          <td>${question.category_name}</td>
-          <td>${question.question_text}</td>
-          <td>${question.question_type}</td>
-          <td>
-            <button class="btn btn-sm btn-warning me-2">Редактирай</button>
-            <button class="btn btn-sm btn-danger">Изтрий</button>
-          </td>
-        `;
-        tableBody.appendChild(row);
-      });
-    })
-    .catch(err => console.error('Error fetching questions:', err));
-}
-
-window.onload = function() {
-  loadQuestions();
-
-  const form = document.getElementById('createQuestionForm');
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const category_id = document.getElementById('category_id').value;
-    const question_text = document.getElementById('question_text').value;
-    const question_type = document.getElementById('question_type').value;
-
-    fetch('/questions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ category_id, question_text, question_type })
-    })
-      .then(res => res.json())
-      .then(data => {
-        console.log('Question created:', data);
-        loadQuestions();
-        form.reset();
-      })
-      .catch(err => console.error('Error creating question:', err));
-  });
-}
-</script>
-<script src="/js/navbar.js"></script>
+  <footer>
+    <p>&copy; 2025 OnlineTestGenerator</p>
+  </footer>
+  <script src="/js/navbar.js"></script>
 </body>
 </html>

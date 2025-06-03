@@ -2,50 +2,33 @@
 <html lang="bg">
 <head>
   <meta charset="UTF-8">
-  <title>Online Test Generator</title>
-
-  
-  <link 
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" 
-    rel="stylesheet"
-  />
-
-  
-  <link 
-    rel="stylesheet" 
-    href="/styles/style.css" 
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Начало</title>
+  <link rel="stylesheet" href="/styles/style.css">
 </head>
 <body>
-  <header>
-    <h2>Online Test Generator</h2>
-  </header>
-
-  <nav>
-    <!-- Identifiers for dynamic showing/hiding -->
-    <a id="loginLink" href="/pages/login.html">Login</a>
-    <a id="registerLink" href="/pages/register.html">Register</a>
-    <a id="adminLink" href="/pages/adminPanel.html" style="display: none;">Admin Panel</a>
-    <a id="profileLink" href="/pages/profile.html" style="display: none;">Моят акаунт</a>
-    <a id="logoutLink" href="/auth/logout" style="display: none;">Изход</a>
+  <nav class="navbar">
+    <div>
+      <a href="/pages/index.html">Начало</a>
+      <a href="/pages/questions.html" id="questionsNav">Въпроси</a>
+      <a href="/pages/tests.html" id="testsNav">Тестове</a>
+    </div>
+    <div>
+      <a href="/pages/profile.html">Профил</a>
+      <a href="/pages/login.html" id="loginBtn">Вход</a>
+      <a href="/pages/register.html" id="registerBtn">Регистрация</a>
+      <button id="logoutBtn" style="display:none">Изход</button>
+    </div>
   </nav>
-
   <div class="container">
-    <h1>Добре дошли в нашата платформа</h1>
-    <p>
-      Тук можете да се регистрирате и да участвате в динамично генерирани тестове по различни категории.
-      Ако сте администратор, ще можете да създавате нови въпроси, да задавате параметри на тестове и да следите резултатите.
-    </p>
+    <!-- Основно съдържание на началната страница -->
+    <h1>Добре дошли в Online Test Generator!</h1>
+    <p>Създавайте, решавайте и управлявайте тестове лесно.</p>
   </div>
 
   <footer>
     <p>&copy; 2025 OnlineTestGenerator. Всички права запазени.</p>
   </footer>
-
-  
-  <script 
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
-  </script>
 
   <script src="/js/navbar.js"></script>
 </body>

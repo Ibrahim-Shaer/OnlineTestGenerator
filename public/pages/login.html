@@ -2,77 +2,60 @@
 <html lang="bg">
 <head>
   <meta charset="UTF-8">
-  <title>Вход | Online Test Generator</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0; 
-      padding: 0;
-    }
-    header, footer {
-      background: #f0f0f0;
-      padding: 1rem;
-    }
-    .container {
-      max-width: 500px;
-      margin: 2rem auto;
-      padding: 1rem;
-    }
-    form {
-      display: flex;
-      flex-direction: column;
-    }
-    label {
-      margin: 0.5rem 0 0.2rem;
-    }
-    input[type="email"],
-    input[type="password"] {
-      padding: 0.5rem;
-      margin-bottom: 1rem;
-      font-size: 1rem;
-    }
-    button {
-      padding: 0.6rem;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-    .links {
-      margin-top: 1rem;
-    }
-    .links a {
-      margin-right: 1rem;
-      text-decoration: none;
-      color: #333;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Вход</title>
+  <link rel="stylesheet" href="/styles/style.css">
 </head>
 <body>
-
-<header>
-  <h2>Online Test Generator - Вход</h2>
-</header>
-
-<div class="container">
-
-  <form action="/auth/login" method="POST">
-    <label for="email">Имейл:</label>
-    <input type="email" id="email" name="email" required />
-
-    <label for="password">Парола:</label>
-    <input type="password" id="password" name="password" required />
-
-    <button type="submit">Влез</button>
-  </form>
-
-  <div class="links">
-    <a href="/pages/register.html">Регистрация</a>
-    <a href="/">Начална страница</a>
+  <nav class="navbar">
+    <div>
+      <a href="/pages/index.html">Начало</a>
+      <a href="/pages/questions.html">Въпроси</a>
+      <a href="/pages/tests.html">Тестове</a>
+    </div>
+    <div>
+      <a href="/pages/register.html" id="registerBtn">Регистрация</a>
+    </div>
+  </nav>
+  <div class="container">
+    <h1>Вход</h1>
+    <form id="loginForm">
+      <label for="email">Имейл</label>
+      <input type="email" id="email" name="email" required>
+      <label for="password">Парола</label>
+      <input type="password" id="password" name="password" required>
+      <button type="submit" class="btn" id="loginBtn">Вход</button>
+    </form>
+    <p>Нямате акаунт? <a href="/pages/register.html">Регистрирайте се</a></p>
+    <div id="loginError" style="color:red;display:none;"></div>
   </div>
-</div>
-
-<footer>
-  <p>&copy; 2025 OnlineTestGenerator</p>
-</footer>
-<script src="/js/navbar.js"></script>
+  <footer>
+    <p>&copy; 2025 OnlineTestGenerator</p>
+  </footer>
+  <script src="/js/navbar.js"></script>
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      try {
+        const res = await fetch('/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          window.location.href = '/pages/profile.html';
+        } else {
+          document.getElementById('loginError').style.display = '';
+          document.getElementById('loginError').textContent = data.message || 'Грешен имейл или парола!';
+        }
+      } catch (err) {
+        document.getElementById('loginError').style.display = '';
+        document.getElementById('loginError').textContent = 'Грешка при връзка със сървъра.';
+      }
+    });
+  </script>
 </body>
 </html>

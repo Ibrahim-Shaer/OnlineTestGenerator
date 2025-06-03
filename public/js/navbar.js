@@ -2,42 +2,42 @@ window.addEventListener('DOMContentLoaded', async function() {
   try {
     const response = await fetch('/auth/status');
     const data = await response.json();
-
-    // Показване/скриване на бутони според логване
+    const loginBtn = document.getElementById('loginBtn');
+    const registerBtn = document.getElementById('registerBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const questionsNav = document.getElementById('questionsNav');
+    const testsNav = document.getElementById('testsNav');
     if (data.loggedIn) {
-      const loginLink = document.getElementById('loginLink');
-      const registerLink = document.getElementById('registerLink');
-      const logoutLink = document.getElementById('logoutLink');
-      const profileLink = document.getElementById('profileLink');
-      const adminLink = document.getElementById('adminLink');
-      if (loginLink) loginLink.style.display = 'none';
-      if (registerLink) registerLink.style.display = 'none';
-      if (logoutLink) logoutLink.style.display = '';
-      if (profileLink) profileLink.style.display = '';
-      if (adminLink) adminLink.style.display = (data.user.role === 'admin') ? '' : 'none';
+      if (loginBtn) loginBtn.style.display = 'none';
+      if (registerBtn) registerBtn.style.display = 'none';
+      if (logoutBtn) logoutBtn.style.display = '';
+      if (logoutBtn) {
+        logoutBtn.onclick = async function() {
+          await fetch('/auth/logout', { method: 'POST' });
+          window.location.href = '/pages/login.html';
+        };
+      }
+      if (data.user.role === 'student') {
+        if (questionsNav) questionsNav.style.display = 'none';
+        if (testsNav) testsNav.style.display = 'none';
+      }
     } else {
-      const loginLink = document.getElementById('loginLink');
-      const registerLink = document.getElementById('registerLink');
-      const logoutLink = document.getElementById('logoutLink');
-      const profileLink = document.getElementById('profileLink');
-      const adminLink = document.getElementById('adminLink');
-      if (loginLink) loginLink.style.display = '';
-      if (registerLink) registerLink.style.display = '';
-      if (logoutLink) logoutLink.style.display = 'none';
-      if (profileLink) profileLink.style.display = 'none';
-      if (adminLink) adminLink.style.display = 'none';
+      if (loginBtn) loginBtn.style.display = '';
+      if (registerBtn) registerBtn.style.display = '';
+      if (logoutBtn) logoutBtn.style.display = 'none';
+      if (questionsNav) questionsNav.style.display = '';
+      if (testsNav) testsNav.style.display = '';
     }
   } catch (err) {
-    // Ако има грешка, показвай login/register
-    const loginLink = document.getElementById('loginLink');
-    const registerLink = document.getElementById('registerLink');
-    const logoutLink = document.getElementById('logoutLink');
-    const profileLink = document.getElementById('profileLink');
-    const adminLink = document.getElementById('adminLink');
-    if (loginLink) loginLink.style.display = '';
-    if (registerLink) registerLink.style.display = '';
-    if (logoutLink) logoutLink.style.display = 'none';
-    if (profileLink) profileLink.style.display = 'none';
-    if (adminLink) adminLink.style.display = 'none';
+    const loginBtn = document.getElementById('loginBtn');
+    const registerBtn = document.getElementById('registerBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const questionsNav = document.getElementById('questionsNav');
+    const testsNav = document.getElementById('testsNav');
+    if (loginBtn) loginBtn.style.display = '';
+    if (registerBtn) registerBtn.style.display = '';
+    if (logoutBtn) logoutBtn.style.display = 'none';
+    if (questionsNav) questionsNav.style.display = '';
+    if (testsNav) testsNav.style.display = '';
   }
 }); 

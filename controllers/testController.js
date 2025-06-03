@@ -139,6 +139,17 @@ exports.getAllTests = async (req, res) => {
     for (const test of rows) {
       const [qCount] = await pool.query('SELECT COUNT(*) as cnt FROM test_questions WHERE test_id = ?', [test.id]);
       test.questionCount = qCount[0].cnt;
+
+      // --- ДОБАВИ ТОВА: вземи възложените студенти за този тест
+      const [assigned] = await pool.query(`
+        SELECT u.username
+        FROM assigned_tests at
+        JOIN users u ON at.student_id = u.id
+        WHERE at.test_id = ?
+      `, [test.id]);
+      test.assignedTo = assigned.length
+        ? assigned.map(a => a.username).join(', ')
+        : '-';
     }
     res.json(rows);
   } catch (err) {

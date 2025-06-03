@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   let isTeacherOrAdmin = false;
 
-  // Първо взимаме статуса на потребителя
+ 
   fetch('/auth/status')
     .then(res => res.json())
     .then(status => {
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', async function() {
           tbody.appendChild(tr);
         });
 
-        // Добавяме event listener-и само ако има бутони
+        
         if (isTeacherOrAdmin) {
           document.querySelectorAll('.assign-btn').forEach(btn => {
             btn.addEventListener('click', function() {
