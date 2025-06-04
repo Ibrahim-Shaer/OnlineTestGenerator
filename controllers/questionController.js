@@ -156,3 +156,54 @@ exports.getQuestions = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+// Adding a new category
+exports.createCategory = async (req, res) => {
+  try {
+    const { name } = req.body;
+    if (!name || name.trim().length < 2) {
+      return res.status(400).json({ message: 'Името на категорията е твърде кратко.' });
+    }
+    // Check for duplication
+    const [exists] = await pool.query('SELECT id FROM category WHERE name = ?', [name.trim()]);
+    if (exists.length > 0) {
+      return res.status(400).json({ message: 'Тази категория вече съществува.' });
+    }
+    const [result] = await pool.query('INSERT INTO category (name) VALUES (?)', [name.trim()]);
+    res.json({ id: result.insertId, name: name.trim() });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Възникна грешка при създаване на категория.' });
+  }
+};
+
+// Returns N random questions by category
+exports.getRandomQuestionsByCategory = async (req, res) => {
+  try {
+    const { category_id, count } = req.query;
+    if (!category_id || !count) {
+      return res.status(400).json({ message: 'Липсва категория или брой.' });
+    }
+    // Проверка за достатъчно въпроси
+    const [all] = await pool.query(
+      'SELECT COUNT(*) as total FROM questions WHERE category_id = ?',
+      [category_id]
+    );
+    if (all[0].total < parseInt(count)) {
+      return res.status(400).json({ message: `В категорията има само ${all[0].total} въпроса.` });
+    }
+    const [rows] = await pool.query(
+      `SELECT q.id, q.question_text, q.question_type, q.category_id, c.name AS category_name
+       FROM questions q
+       JOIN category c ON q.category_id = c.id
+       WHERE q.category_id = ?
+       ORDER BY RAND()
+       LIMIT ?`,
+      [category_id, parseInt(count)]
+    );
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};

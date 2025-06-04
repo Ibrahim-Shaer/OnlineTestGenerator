@@ -47,7 +47,8 @@ exports.login = async (req, res) => {
       id: user.id,
       username: user.username,        
       role: user.role,
-      avatar: user.avatar || null 
+      avatar: user.avatar || null,
+      email: user.email
     };
 
     res.json({ message: 'Login successful', role: user.role });
@@ -84,7 +85,8 @@ exports.uploadAvatar = async (req, res) => {
         id: user.id,
         username: user.username,
         role: user.role,
-        avatar: user.avatar || null
+        avatar: user.avatar || null,
+        email: user.email
       };
     }
 
@@ -107,6 +109,36 @@ exports.getAllStudents = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
+  }
+};
+
+exports.updateProfile = async (req, res) => {
+  try {
+    const userId = req.session.user.id;
+    const { username, email, newPassword } = req.body;
+
+    const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [userId]);
+    if (rows.length === 0) {
+      return res.status(404).json({ message: 'Потребителят не е намерен!' });
+    }
+
+    let passwordToSave = rows[0].password;
+    if (newPassword) {
+      passwordToSave = await bcrypt.hash(newPassword, 10);
+    }
+
+    await pool.query(
+      'UPDATE users SET username = ?, email = ?, password = ? WHERE id = ?',
+      [username, email, passwordToSave, userId]
+    );
+
+    req.session.user.username = username;
+    req.session.user.email = email;
+
+    res.json({ message: 'Данните са обновени успешно!' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Вътрешна грешка на сървъра!' });
   }
 };
 

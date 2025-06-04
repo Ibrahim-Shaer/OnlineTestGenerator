@@ -15,6 +15,12 @@ router.post('/', isTeacherOrAdmin, questionController.createQuestion);
 // Reading all questions (GET /questions)
 router.get('/', isTeacherOrAdmin, questionController.getAllQuestions);
 
+// Adding a new category
+router.post('/categories', isTeacherOrAdmin, questionController.createCategory);
+
+// Returns random questions by category
+router.get('/random', isTeacherOrAdmin, questionController.getRandomQuestionsByCategory);
+
 // Reading a question by ID (GET /questions/:id)
 router.get('/:id', isTeacherOrAdmin, questionController.getQuestionById);
 
@@ -23,5 +29,6 @@ router.put('/:id', isTeacherOrAdmin, questionController.updateQuestion);
 
 // Deleting a question (DELETE /questions/:id)
 router.delete('/:id', isTeacherOrAdmin, questionController.deleteQuestion);
+
 
 module.exports = router;

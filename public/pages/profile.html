@@ -18,18 +18,11 @@
     rel="stylesheet"
     href="/styles/style.css"
   />
+
+  <link rel="stylesheet" href="/styles/profile.css">
 </head>
 <body>
-
-<nav class="navbar">
-  <div>
-    <a href="/pages/index.html">Начало</a>
-  </div>
-  <div>
-    <a href="/pages/profile.html">Профил</a>
-    <button id="logoutBtn">Изход</button>
-  </div>
-</nav>
+  <div id="navbar"></div>
 
 <div class="container my-4">
   <h1 class="text-center mb-4">Моят профил</h1>
@@ -52,13 +45,43 @@
               class="img-fluid rounded-circle border border-3 border-primary shadow-sm"
               style="width: 140px; height: 140px; object-fit: cover; background: #f8f9fa;"
             />
-            <button type="button" class="avatar-upload-btn" id="avatarUploadBtn" title="Смени снимка">
+            <button type="button" class="avatar-upload-btn btn btn-light btn-circle btn-sm" id="avatarUploadBtn" title="Смени снимка">
               <i class="fa fa-plus"></i>
             </button>
           </div>
           <h4 class="card-title" id="profileUsername"></h4>
           <p class="card-text">Роля: <strong id="profileRole"></strong></p>
+          
           <div id="role-buttons"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row justify-content-center mt-4">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Редакция на лични данни</h5>
+          <div id="profileEditAlert"></div>
+          <form id="profileEditForm">
+            <div class="mb-3">
+              <label for="editUsername" class="form-label">Потребителско име</label>
+              <input type="text" class="form-control" id="editUsername" name="username" required>
+            </div>
+            <div class="mb-3">
+              <label for="editEmail" class="form-label">Имейл</label>
+              <input type="email" class="form-control" id="editEmail" name="email" required>
+            </div>
+            <div class="mb-3">
+              <label for="newPassword" class="form-label">Нова парола</label>
+              <input type="password" class="form-control" id="newPassword" name="newPassword" autocomplete="new-password">
+            </div>
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label">Потвърди нова парола</label>
+              <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" autocomplete="new-password">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Запази промените</button>
+          </form>
         </div>
       </div>
     </div>
@@ -72,46 +95,6 @@
 <script
   src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
 </script>
-
-<style>
-.avatar-container {
-  position: relative;
-  display: inline-block;
-}
-.avatar-upload-btn {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: transparent;
-  border: none;
-  color: #6c757d;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.2s;
-  cursor: pointer;
-  z-index: 2;
-  font-size: 2.2rem;
-  padding: 0;
-  box-shadow: none;
-}
-.avatar-container:hover .avatar-upload-btn {
-  opacity: 1;
-}
-.avatar-upload-btn:focus {
-  outline: none;
-  box-shadow: none;
-}
-.avatar-upload-btn:hover, .avatar-upload-btn:focus {
-  color: #343a40;
-  background: transparent;
-}
-#avatarInput { display: none; }
-</style>
 
 <script src="/js/profile.js"></script>
 <script src="/js/navbar.js"></script>

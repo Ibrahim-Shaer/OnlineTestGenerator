@@ -46,12 +46,13 @@ document.addEventListener('DOMContentLoaded', async function() {
       // Multiple choice: dynamically adding answers
       const answersDiv = document.createElement('div');
       answersDiv.id = 'answersDiv';
-      answersDiv.innerHTML = '<label class="form-label">Possible answers:</label>';
+      answersDiv.innerHTML = '<label class="form-label">Възможни отговори:</label>';
       for (let i = 0; i < 2; i++) addAnswerInput(answersDiv);
       const addBtn = document.createElement('button');
       addBtn.type = 'button';
-      addBtn.className = 'btn btn-secondary btn-sm mt-2';
-      addBtn.textContent = 'Добави отговор';
+      addBtn.className = 'btn btn-success btn-sm mt-2';
+      addBtn.innerHTML = '<i class="fa fa-plus"></i> Добави отговор';
+      addBtn.setAttribute('aria-label', 'Добави отговор');
       addBtn.onclick = () => addAnswerInput(answersDiv);
       answersDiv.appendChild(addBtn);
       answersSection.appendChild(answersDiv);
@@ -78,10 +79,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     row.className = 'input-group mb-2 answer-row';
     row.innerHTML = `
       <div class="input-group-text">
-        <input type="checkbox" name="correctAnswer" class="form-check-input mt-0" title="Верният отговор">
+        <input type="checkbox" name="correctAnswer" class="form-check-input mt-0" title="Верният отговор" aria-label="Маркирай като верен отговор">
       </div>
-      <input type="text" class="form-control" name="answerText" placeholder="Отговор ${idx + 1}" required>
-      <button class="btn btn-danger" type="button">-</button>
+      <input type="text" class="form-control" name="answerText" placeholder="Отговор ${idx + 1}" required aria-label="Отговор ${idx + 1}">
+      <button class="btn btn-outline-danger" type="button" aria-label="Премахни отговор"><i class="fa fa-trash"></i></button>
     `;
     row.querySelector('button').onclick = () => row.remove();
     answersDiv.insertBefore(row, answersDiv.lastElementChild); 
@@ -130,4 +131,51 @@ document.addEventListener('DOMContentLoaded', async function() {
       alert('Грешка при връзка със сървъра!');
     }
   });
+
+  //Category Modal Logic 
+  const addCategoryBtn = document.getElementById('addCategoryBtn');
+  const addCategoryModal = document.getElementById('addCategoryModal');
+  const saveCategoryBtn = document.getElementById('saveCategoryBtn');
+  const newCategoryName = document.getElementById('newCategoryName');
+  const addCategoryError = document.getElementById('addCategoryError');
+  let bsAddCategoryModal = null;
+  if (addCategoryModal) {
+    bsAddCategoryModal = new bootstrap.Modal(addCategoryModal);
+    addCategoryBtn.addEventListener('click', () => {
+      newCategoryName.value = '';
+      addCategoryError.style.display = 'none';
+      bsAddCategoryModal.show();
+    });
+    saveCategoryBtn.addEventListener('click', async () => {
+      const name = newCategoryName.value.trim();
+      if (!name) {
+        addCategoryError.textContent = 'Моля, въведете име на категория!';
+        addCategoryError.style.display = '';
+        return;
+      }
+      try {
+        const res = await fetch('/questions/categories', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name })
+        });
+        const result = await res.json();
+        if (res.ok) {
+          // Add the new category to the select
+          const opt = document.createElement('option');
+          opt.value = result.id;
+          opt.textContent = result.name;
+          categorySelect.appendChild(opt);
+          categorySelect.value = result.id;
+          bsAddCategoryModal.hide();
+        } else {
+          addCategoryError.textContent = result.message || 'Грешка при добавяне на категория!';
+          addCategoryError.style.display = '';
+        }
+      } catch (err) {
+        addCategoryError.textContent = 'Грешка при връзка със сървъра!';
+        addCategoryError.style.display = '';
+      }
+    });
+  }
 }); 

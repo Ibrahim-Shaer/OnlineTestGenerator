@@ -37,9 +37,9 @@ document.addEventListener('DOMContentLoaded', function() {
           html += `<textarea class="form-control" name="q${q.id}" rows="2" required></textarea>`;
         }
         html += '</div>';
-        form.innerHTML += html;
+        document.getElementById('questionsContainer').innerHTML += html;
       });
-      form.innerHTML += `<button type="submit" class="btn btn-success">Изпрати</button>`;
+      
     });
 
   document.getElementById('solveTestForm').addEventListener('submit', function(e) {

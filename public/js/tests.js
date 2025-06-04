@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     questionsList.innerHTML = '';
     questions.forEach(q => {
       questionsList.innerHTML += `
-        <div class="form-check">
+        <div class="form-check" data-category-id="${q.category_id}">
           <input class="form-check-input" type="checkbox" value="${q.id}" id="q${q.id}" name="questions">
           <label class="form-check-label" for="q${q.id}">
             ${q.question_text} <span class="text-muted">(${q.question_type})</span>
@@ -139,6 +139,69 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
       });
   }
+
+  // --- Random Questions by Category ---
+  async function loadCategories() {
+    const res = await fetch('/questions/categories');
+    const categories = await res.json();
+    const catSelect = document.getElementById('randomCategory');
+    if (!catSelect) return;
+    catSelect.innerHTML = '';
+    categories.forEach(cat => {
+      const opt = document.createElement('option');
+      opt.value = cat.id;
+      opt.textContent = cat.name;
+      catSelect.appendChild(opt);
+    });
+  }
+
+  // Loading categories when the form is shown
+  document.getElementById('createTestBtn').addEventListener('click', function() {
+    setTimeout(loadCategories, 100); // small delay for DOM
+  });
+
+  // Adding random questions
+  document.getElementById('addRandomQuestionsBtn')?.addEventListener('click', async function() {
+    const catId = document.getElementById('randomCategory').value;
+    const count = document.getElementById('randomCount').value;
+    const errorDiv = document.getElementById('randomQuestionsError');
+    if (!catId || !count) return;
+    errorDiv.style.display = 'none';
+    errorDiv.textContent = '';
+    const res = await fetch(`/questions/random?category_id=${catId}&count=${count}`);
+    const questions = await res.json();
+    if (!Array.isArray(questions)) {
+      errorDiv.textContent = questions.message || 'Грешка при зареждане на въпросите!';
+      errorDiv.style.display = '';
+      return;
+    }
+    errorDiv.style.display = 'none';
+    errorDiv.textContent = '';
+    const questionsList = document.getElementById('questionsList');
+    const catSelect = document.getElementById('randomCategory');
+    const selectedCatName = catSelect.options[catSelect.selectedIndex].textContent;
+    // Uncheck всички въпроси от тази категория
+    document.querySelectorAll('.form-check[data-category-id]').forEach(div => {
+      if (div.getAttribute('data-category-id') === catId) {
+        div.querySelector('input[type="checkbox"]').checked = false;
+      }
+    });
+    // Чеквам само новите random въпроси
+    questions.forEach(q => {
+      if (!document.getElementById('q'+q.id)) {
+        questionsList.innerHTML += `
+          <div class="form-check" data-category-id="${q.category_id}">
+            <input class="form-check-input" type="checkbox" value="${q.id}" id="q${q.id}" name="questions" checked>
+            <label class="form-check-label" for="q${q.id}">
+              ${q.question_text} <span class="text-muted">(${q.question_type})</span>
+            </label>
+          </div>
+        `;
+      } else {
+        document.getElementById('q'+q.id).checked = true;
+      }
+    });
+  });
 });
 
 //function for deletion (must be implemented in backend)

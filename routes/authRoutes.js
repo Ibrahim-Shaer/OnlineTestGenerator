@@ -25,7 +25,8 @@ router.get('/status', (req, res) => {
       id: req.session.user.id,
       username: req.session.user.username,
       role: req.session.user.role,
-      avatar: req.session.user.avatar || null
+      avatar: req.session.user.avatar || null,
+      email: req.session.user.email
     }
   });
 });
@@ -44,5 +45,7 @@ router.post('/upload-avatar', upload.single('avatar'), authController.uploadAvat
 
 // Returns all students (only for teachers/admins)
 router.get('/students', isAuthenticated, isTeacherOrAdmin, authController.getAllStudents);
+
+router.post('/update-profile', authController.updateProfile);
 
 module.exports = router;

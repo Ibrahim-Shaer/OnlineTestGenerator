@@ -73,6 +73,47 @@ document.addEventListener('DOMContentLoaded', async function() {
         alertBox.style.display = '';
       }
     });
+
+    // Filling the fields with the current data
+    document.getElementById('editUsername').value = user.username;
+    document.getElementById('editEmail').value = user.email;
+
+    // Submit logic for the edit form
+    document.getElementById('profileEditForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const username = document.getElementById('editUsername').value;
+      const email = document.getElementById('editEmail').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const alertBox = document.getElementById('profileEditAlert');
+      alertBox.innerHTML = '';
+      alertBox.style.display = 'none';
+      if (newPassword && newPassword !== confirmPassword) {
+        alertBox.innerHTML = '<div class="alert alert-danger">Новата парола и потвърждението не съвпадат!</div>';
+        alertBox.style.display = '';
+        return;
+      }
+      try {
+        const res = await fetch('/auth/update-profile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, email, newPassword })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          alertBox.innerHTML = '<div class="alert alert-success">Данните са обновени успешно!</div>';
+          alertBox.style.display = '';
+          // Refreshing the displayed data
+          document.getElementById('profileUsername').textContent = username;
+        } else {
+          alertBox.innerHTML = `<div class="alert alert-danger">${data.message || 'Грешка при обновяване!'}</div>`;
+          alertBox.style.display = '';
+        }
+      } catch (err) {
+        alertBox.innerHTML = '<div class="alert alert-danger">Грешка при връзка със сървъра!</div>';
+        alertBox.style.display = '';
+      }
+    });
   } catch (err) {
     console.error('Error loading profile:', err);
   }
