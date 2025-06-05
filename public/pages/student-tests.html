@@ -11,19 +11,35 @@
   <div id="navbar"></div>
   <div class="container my-4">
     <h1>Моите възложени тестове</h1>
-    <table class="table table-bordered" id="assignedTestsTable">
-      <thead>
-        <tr>
-          <th>Тест</th>
-          <th>Описание</th>
-          <th>Период</th>
-          <th>Действие</th>
-        </tr>
-      </thead>
-      <tbody>
-       
-      </tbody>
-    </table>
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <input type="text" id="searchTest" class="form-control" placeholder="Търси по име на тест...">
+      </div>
+      <div class="col-md-6">
+        <select id="statusFilter" class="form-select">
+          <option value="">Всички</option>
+          <option value="assigned">Още незапочнат</option>
+          <option value="completed">Завършен</option>
+          <option value="expired">Изтекъл</option>
+        </select>
+      </div>
+    </div>
+    <div style="max-height: 500px; overflow-y: auto;">
+      <table class="table table-bordered" id="assignedTestsTable">
+        <thead>
+          <tr>
+            <th>Тест</th>
+            <th>Описание</th>
+            <th>Период</th>
+            <th>Действие</th>
+            <th>Резултат</th>
+          </tr>
+        </thead>
+        <tbody>
+         
+        </tbody>
+      </table>
+    </div>
     <div id="noTests" class="alert alert-info" style="display:none;">Нямате възложени тестове.</div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

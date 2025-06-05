@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
   const urlParams = new URLSearchParams(window.location.search);
-  const testId = urlParams.get('test_id');
-  if (!testId) {
-    document.getElementById('result').textContent = 'Липсва test_id!';
+  const assignedId = urlParams.get('assigned_id');
+  if (!assignedId) {
+    document.getElementById('result').textContent = 'Липсва assigned_id!';
     return;
   }
-  fetch(`/assigned-tests/${testId}/questions`)
+  fetch(`/assigned-tests/${assignedId}/questions`)
     .then(res => res.json())
     .then(data => {
       const form = document.getElementById('solveTestForm');
@@ -25,11 +25,11 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (q.question_type === 'true_false') {
           html += `
             <div class="form-check">
-              <input class="form-check-input" type="radio" name="q${q.id}" value="true" id="q${q.id}_true" required>
+              <input class="form-check-input" type="radio" name="q${q.id}" value="Да" id="q${q.id}_true" required>
               <label class="form-check-label" for="q${q.id}_true">Вярно</label>
             </div>
             <div class="form-check">
-              <input class="form-check-input" type="radio" name="q${q.id}" value="false" id="q${q.id}_false" required>
+              <input class="form-check-input" type="radio" name="q${q.id}" value="Не" id="q${q.id}_false" required>
               <label class="form-check-label" for="q${q.id}_false">Грешно</label>
             </div>
           `;
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const question_id = key.replace('q', '');
       answers.push({ question_id, answer: value });
     }
-    fetch(`/assigned-tests/${testId}/submit`, {
+    fetch(`/assigned-tests/${assignedId}/submit`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ answers })

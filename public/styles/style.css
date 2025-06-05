@@ -122,4 +122,20 @@ h1 {
   color: #222;
   font-weight: 600;
 }
+
+.table-responsive {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+/* Vertical alignment of the button in the input-group for dynamic questions */
+#dynamicQuestionsSection .form-select,
+#dynamicQuestionsSection .form-control,
+#dynamicQuestionsSection .btn {
+  height: 38px;
+  min-height: 38px;
+  font-size: 1rem;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
   

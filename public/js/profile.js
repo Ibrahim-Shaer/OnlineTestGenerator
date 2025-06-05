@@ -23,7 +23,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     } else if (user.role === 'teacher' || user.role === 'admin') {
       roleButtons.innerHTML = `
         <a href="/pages/questions.html" class="btn btn-success mt-2 me-2">Създай въпрос</a>
-        <a href="/pages/tests.html" class="btn btn-primary mt-2">Тестове</a>
+        <a href="/pages/tests.html" class="btn btn-primary mt-2 me-2">Тестове</a>
+        <a href="/pages/review-list.html" class="btn btn-warning mt-2">Прегледай тестове на ученици</a>
       `;
     }
 

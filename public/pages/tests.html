@@ -6,6 +6,7 @@
   <title>Тестове</title>
   <link rel="stylesheet" href="/styles/style.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
 </head>
 <body>
   <div id="navbar"></div>
@@ -45,8 +46,8 @@
                   <div id="randomQuestionsError" class="text-danger mt-2" style="display:none"></div>
                 </div>
                 <div class="mb-3">
-                  <label class="form-label">Избери въпроси:</label>
-                  <div id="questionsList"></div>
+                  <button type="button" class="btn btn-outline-primary w-100" id="openQuestionsModalBtn">Избери въпроси</button>
+                  <div id="selectedQuestionsPreview" class="mt-2"></div>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Създай</button>
               </form>
@@ -75,5 +76,59 @@
   <script src="/js/navbar.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/js/tests.js"></script>
+  <!-- Modal for question selection -->
+  <div class="modal fade" id="questionsModal" tabindex="-1" aria-labelledby="questionsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="questionsModalLabel"><i class="fa fa-question-circle me-2"></i>Избери въпроси</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Затвори"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-4 d-flex gap-2 justify-content-center">
+            <button type="button" class="btn btn-outline-primary flex-fill" id="manualModeBtn"><i class="fa fa-hand-pointer me-2"></i>Избери въпросите ръчно</button>
+            <button type="button" class="btn btn-outline-success flex-fill" id="dynamicModeBtn"><i class="fa fa-random me-2"></i>Избери въпроси динамично</button>
+          </div>
+          <!-- Section for manual selection -->
+          <div id="manualQuestionsSection">
+            <div class="row mb-3 align-items-end">
+              <div class="col-md-7 mb-2 mb-md-0">
+                <input type="text" id="modalSearchQuestion" class="form-control" placeholder="Търси по текст...">
+              </div>
+              <div class="col-md-5">
+                <select id="modalCategoryFilter" class="form-select">
+                  <option value="">Всички категории</option>
+                </select>
+              </div>
+            </div>
+            <div id="modalQuestionsList" style="max-height:400px;overflow-y:auto;"></div>
+          </div>
+          <!-- Section for dynamic selection -->
+          <div id="dynamicQuestionsSection" style="display:none;">
+            <div class="d-flex gap-2 mb-3">
+              <select id="dynamicCategory" class="form-select flex-fill" aria-label="Избор на категория">
+                <option value="">– Избери категория –</option>
+              </select>
+              <input type="number" id="dynamicCount" class="form-control flex-fill" min="1" value="1" placeholder="Брой въпроси" aria-label="Брой въпроси" />
+              <button type="button" class="btn btn-success flex-fill" id="generateDynamicQuestionsBtn" aria-label="Генерирай">
+                <i class="fa fa-random me-1"></i>Генерирай
+              </button>
+            </div>
+            <div id="dynamicQuestionsError" class="text-danger mb-2" style="display:none;"></div>
+          </div>
+          <!-- List of selected questions for review and editing -->
+          <div id="selectedQuestionsEditSection" class="mt-4" style="display:none;">
+            <b class="mb-2 d-block">Избрани въпроси:</b>
+            <ul id="selectedQuestionsEditList" class="list-group mb-2"></ul>
+            <div class="text-muted" id="noSelectedQuestionsEdit" style="display:none;">Няма избрани въпроси.</div>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa fa-times me-1"></i>Затвори</button>
+          <button type="button" class="btn btn-primary" id="saveQuestionsSelectionBtn"><i class="fa fa-check me-1"></i>Запази избора</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
