@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const questionController = require('../controllers/questionController');
-const { isTeacherOrAdmin, isAuthenticated } = require('../middleware/auth');
+const { isTeacherOrAdmin, isAuthenticated, isAdmin } = require('../middleware/auth');
 
 // ВРЪЩАНЕ НА ВСИЧКИ КАТЕГОРИИ (ТРЯБВА ДА Е ПРЕДИ :id!)
 router.get('/categories', isAuthenticated, questionController.getCategories);
@@ -30,5 +30,10 @@ router.put('/:id', isTeacherOrAdmin, questionController.updateQuestion);
 // Deleting a question (DELETE /questions/:id)
 router.delete('/:id', isTeacherOrAdmin, questionController.deleteQuestion);
 
+// Редакция на категория
+router.put('/categories/:id', isAdmin, questionController.updateCategory);
+
+// Изтриване на категория
+router.delete('/categories/:id', isAdmin, questionController.deleteCategory);
 
 module.exports = router;

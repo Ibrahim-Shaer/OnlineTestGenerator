@@ -6,13 +6,13 @@ document.addEventListener('DOMContentLoaded', async function() {
   try {
     const res = await fetch('/auth/status');
     const data = await res.json();
-    if (!data.loggedIn || (data.user.role !== 'teacher' && data.user.role !== 'admin')) {
+    if (!data.loggedIn || (data.user.role_name !== 'teacher' && data.user.role_name !== 'admin')) {
       roleError.style.display = '';
       roleError.textContent = 'Нямате права за достъп до тази страница!';
       form.style.display = 'none';
       return;
     }
-    userRole = data.user.role;
+    userRole = data.user.role_name;
     form.style.display = '';
   } catch (err) {
     roleError.style.display = '';

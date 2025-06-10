@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   // Checking role
   const res = await fetch('/auth/status');
   const data = await res.json();
-  if (!data.loggedIn || (data.user.role !== 'teacher' && data.user.role !== 'admin')) {
+  if (!data.loggedIn || (data.user.role_name !== 'teacher' && data.user.role_name !== 'admin')) {
     document.getElementById('role-error').style.display = '';
     document.getElementById('role-error').textContent = 'Нямате права за достъп до тази страница!';
     document.getElementById('testsTable').style.display = 'none';
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   fetch('/auth/status')
     .then(res => res.json())
     .then(status => {
-      isTeacherOrAdmin = status.loggedIn && (status.user.role === 'teacher' || status.user.role === 'admin');
+      isTeacherOrAdmin = status.loggedIn && (status.user.role_name === 'teacher' || status.user.role_name === 'admin');
       loadTests();
     });
 

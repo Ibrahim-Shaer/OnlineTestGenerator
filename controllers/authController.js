@@ -14,12 +14,18 @@ exports.register = async (req, res) => {
       return res.status(400).json({ message: 'Email already exists' });
     }
 
-  
+    // Вземи role_id по име
+    const [roleRows] = await pool.query('SELECT id FROM roles WHERE name = ?', [role || 'student']);
+    if (roleRows.length === 0) {
+      return res.status(400).json({ message: 'Невалидна роля!' });
+    }
+    const role_id = roleRows[0].id;
+
     const hashedPassword = await bcrypt.hash(password, 10);
     await pool.query(`
-      INSERT INTO users (username, email, password, role)
+      INSERT INTO users (username, email, password, role_id)
       VALUES (?, ?, ?, ?)
-    `, [username, email, hashedPassword, role || 'student']);
+    `, [username, email, hashedPassword, role_id]);
 
     
     res.json({ message: 'Registration successful' });
@@ -33,7 +39,11 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+    const [rows] = await pool.query(
+      `SELECT u.*, r.name as role_name, r.id as role_id
+       FROM users u
+       LEFT JOIN roles r ON u.role_id = r.id
+       WHERE u.email = ?`, [email]);
     if (rows.length === 0) {
       return res.status(400).json({ message: 'Invalid email or password' });
     }
@@ -46,12 +56,13 @@ exports.login = async (req, res) => {
     req.session.user = {
       id: user.id,
       username: user.username,        
-      role: user.role,
+      role_id: user.role_id,
+      role_name: user.role_name,
       avatar: user.avatar || null,
       email: user.email
     };
 
-    res.json({ message: 'Login successful', role: user.role });
+    res.json({ message: 'Login successful', role: user.role_name });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Internal server error' });
@@ -62,10 +73,9 @@ exports.logout = (req, res) => {
   req.session.destroy(err => {
     if (err) {
       console.error(err);
-      return res.status(500).send('Error while logging out');
+      return res.status(500).json({ message: 'Error while logging out' });
     }
-    // After destroying the session, redirect to login.html
-    res.redirect('/');
+    res.json({ success: true });
   });
 };
 
@@ -78,13 +88,18 @@ exports.uploadAvatar = async (req, res) => {
     await pool.query('UPDATE users SET avatar = ? WHERE id = ?', [avatarPath, req.session.user.id]);
 
     
-    const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [req.session.user.id]);
+    const [rows] = await pool.query(
+      `SELECT u.*, r.name as role_name, r.id as role_id
+       FROM users u
+       LEFT JOIN roles r ON u.role_id = r.id
+       WHERE u.id = ?`, [req.session.user.id]);
     if (rows.length > 0) {
       const user = rows[0];
       req.session.user = {
         id: user.id,
         username: user.username,
-        role: user.role,
+        role_id: user.role_id,
+        role_name: user.role_name,
         avatar: user.avatar || null,
         email: user.email
       };
@@ -102,8 +117,12 @@ exports.uploadAvatar = async (req, res) => {
 // Returns all students
 exports.getAllStudents = async (req, res) => {
   try {
+    // Вземи role_id за student
+    const [roleRows] = await pool.query('SELECT id FROM roles WHERE name = "student"');
+    if (roleRows.length === 0) return res.json([]);
+    const studentRoleId = roleRows[0].id;
     const [rows] = await pool.query(
-      'SELECT id, username, email FROM users WHERE role = "student"'
+      'SELECT id, username, email FROM users WHERE role_id = ?', [studentRoleId]
     );
     res.json(rows);
   } catch (err) {
@@ -132,13 +151,38 @@ exports.updateProfile = async (req, res) => {
       [username, email, passwordToSave, userId]
     );
 
-    req.session.user.username = username;
-    req.session.user.email = email;
+    // Вземи user с join към roles и презареди сесията
+    const [rows2] = await pool.query(
+      `SELECT u.*, r.name as role_name, r.id as role_id
+       FROM users u
+       LEFT JOIN roles r ON u.role_id = r.id
+       WHERE u.id = ?`, [userId]);
+    if (rows2.length > 0) {
+      const user = rows2[0];
+      req.session.user = {
+        id: user.id,
+        username: user.username,
+        role_id: user.role_id,
+        role_name: user.role_name,
+        avatar: user.avatar || null,
+        email: user.email
+      };
+    }
 
     res.json({ message: 'Данните са обновени успешно!' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Вътрешна грешка на сървъра!' });
+  }
+};
+
+// Check status and return the current user
+exports.status = (req, res) => {
+  if (req.session && req.session.user) {
+    const { id, username, email, avatar, role_id, role_name } = req.session.user;
+    res.json({ loggedIn: true, user: { id, username, email, avatar, role_id, role_name } });
+  } else {
+    res.json({ loggedIn: false });
   }
 };
 

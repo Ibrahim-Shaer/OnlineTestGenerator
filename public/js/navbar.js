@@ -6,7 +6,13 @@ window.addEventListener('DOMContentLoaded', function() {
       .then(res => res.text())
       .then(html => {
         navbarDiv.innerHTML = html;
-        if (typeof setupNavbarAuth === 'function') setupNavbarAuth();
+        // After the partial is loaded, get the status and set the buttons
+        fetch('/auth/status', { credentials: 'include' })
+          .then(res => res.json())
+          .then(data => {
+            setNavbarState(data);
+          })
+          .catch(() => setNavbarState({ loggedIn: false }));
       });
   }
 });
@@ -62,11 +68,11 @@ function setNavbarState({ loggedIn, user }) {
     if (logoutBtn) logoutBtn.style.display = '';
     if (logoutBtn) {
       logoutBtn.onclick = async function() {
-        await fetch('/auth/logout', { method: 'POST' });
+        await fetch('/auth/logout', { method: 'POST', credentials: 'include' });
         window.location.href = '/pages/login.html';
       };
     }
-    if (user && user.role === 'student') {
+    if (user && user.role_name === 'student') {
       if (questionsNav) questionsNav.remove();
       if (testsNav) testsNav.remove();
     }
@@ -79,7 +85,7 @@ function setNavbarState({ loggedIn, user }) {
 
   // Hide questions/tests nav on index for non-teacher
   if (path.endsWith('/index.html') || path === '/' || path === '/pages/') {
-    if (!loggedIn || (user && user.role !== 'teacher' && user.role !== 'admin')) {
+    if (!loggedIn || (user && user.role_name !== 'teacher' && user.role_name !== 'admin')) {
       if (questionsNav) questionsNav.style.display = 'none';
       if (testsNav) testsNav.style.display = 'none';
     } else {
@@ -87,14 +93,21 @@ function setNavbarState({ loggedIn, user }) {
       if (testsNav) testsNav.style.display = '';
     }
   }
-}
 
-window.addEventListener('DOMContentLoaded', async function() {
-  try {
-    const response = await fetch('/auth/status');
-    const data = await response.json();
-    setNavbarState(data);
-  } catch (err) {
-    setNavbarState({ loggedIn: false });
+  // Show admin panel link only for admin
+  let adminPanelLink = document.getElementById('adminPanelNav');
+  if (!adminPanelLink) {
+    const nav = document.querySelector('.navbar-nav.me-auto');
+    if (nav) {
+      adminPanelLink = document.createElement('li');
+      adminPanelLink.className = 'nav-item';
+      adminPanelLink.innerHTML = '<a class="nav-link" id="adminPanelNav" href="/pages/adminPanel.html">Админ панел</a>';
+      nav.appendChild(adminPanelLink);
+    }
   }
-});
+  if (user && user.role_name === 'admin') {
+    if (adminPanelLink) adminPanelLink.style.display = '';
+  } else {
+    if (adminPanelLink) adminPanelLink.style.display = 'none';
+  }
+}

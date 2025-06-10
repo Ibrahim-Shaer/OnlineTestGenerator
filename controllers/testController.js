@@ -130,7 +130,7 @@ exports.getAllTests = async (req, res) => {
   try {
     const user = req.session.user;
     let rows;
-    if (user.role === 'admin') {
+    if (user.role_name === 'admin') {
       [rows] = await pool.query('SELECT id, title, description, duration, created_by FROM tests');
     } else {
       [rows] = await pool.query('SELECT id, title, description, duration, created_by FROM tests WHERE created_by = ?', [user.id]);

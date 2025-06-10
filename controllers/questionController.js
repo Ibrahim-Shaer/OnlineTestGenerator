@@ -207,3 +207,31 @@ exports.getRandomQuestionsByCategory = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+// Редакция на категория
+exports.updateCategory = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { name } = req.body;
+    if (!name || name.trim().length < 2) {
+      return res.status(400).json({ message: 'Името на категорията е твърде кратко.' });
+    }
+    await pool.query('UPDATE category SET name = ? WHERE id = ?', [name.trim(), id]);
+    res.json({ message: 'Категорията е обновена успешно!' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Възникна грешка при редакция на категория.' });
+  }
+};
+
+// Изтриване на категория
+exports.deleteCategory = async (req, res) => {
+  try {
+    const id = req.params.id;
+    await pool.query('DELETE FROM category WHERE id = ?', [id]);
+    res.json({ message: 'Категорията е изтрита успешно!' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Възникна грешка при изтриване на категория.' });
+  }
+};

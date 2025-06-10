@@ -8,6 +8,7 @@ const authRoutes = require('./routes/authRoutes');
 const questionRoutes = require('./routes/questionRoutes');
 const testRoutes = require('./routes/testRoutes');
 const assignedTestsRoutes = require('./routes/assignedTestsRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 const app = express();
 
@@ -44,6 +45,9 @@ app.use('/tests', testRoutes);
 
 // Routes for assigned tests
 app.use('/assigned-tests', assignedTestsRoutes);
+
+// Routes for admin
+app.use('/admin', adminRoutes);
 
 // Example profile route (only if logged in)
 app.get('/profile', (req, res) => {

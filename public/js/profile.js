@@ -1,8 +1,9 @@
 document.addEventListener('DOMContentLoaded', async function() {
   try {
-    const response = await fetch('/auth/status');
+    const response = await fetch('/auth/status', { credentials: 'include' });
     const data = await response.json();
     const user = data.user;
+    console.log('user:', user);
 
     if (!data.loggedIn) {
       window.location.href = '/pages/login.html';
@@ -12,15 +13,15 @@ document.addEventListener('DOMContentLoaded', async function() {
     const avatar = user.avatar || '/images/default-avatar.png';
     document.getElementById('profileAvatar').src = avatar;
     document.getElementById('profileUsername').textContent = user.username;
-    document.getElementById('profileRole').textContent = user.role;
+    document.getElementById('profileRole').textContent = user.role_name;
 
     // Role buttons
     const roleButtons = document.getElementById('role-buttons');
-    if (user.role === 'student') {
+    if (user.role_name === 'student') {
       roleButtons.innerHTML = `
         <a href="/pages/student-tests.html" class="btn btn-primary mt-2">Моите тестове</a>
       `;
-    } else if (user.role === 'teacher' || user.role === 'admin') {
+    } else if (user.role_name === 'teacher' || user.role_name === 'admin') {
       roleButtons.innerHTML = `
         <a href="/pages/questions.html" class="btn btn-success mt-2 me-2">Създай въпрос</a>
         <a href="/pages/tests.html" class="btn btn-primary mt-2 me-2">Тестове</a>
