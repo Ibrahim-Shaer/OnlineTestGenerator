@@ -9,14 +9,26 @@ document.addEventListener('DOMContentLoaded', function() {
       const res = await fetch('/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password, role })
+        body: JSON.stringify({ username, email, password, role }),
+        credentials: 'include'
       });
       const data = await res.json();
       if (res.ok) {
-        showToast('Успешна регистрация!');
-        setTimeout(() => {
+        
+        const loginRes = await fetch('/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ email, password })
+        });
+        if (loginRes.ok) {
+          showToast('Успешна регистрация!');
+          setTimeout(() => {
           window.location.href = '/pages/profile.html';
         }, 1500);
+        }else {
+          showToast('Регистрацията е успешна, но логването не успя.');
+        }
       } else {
         document.getElementById('registerError').style.display = '';
         document.getElementById('registerError').textContent = data.message || 'Грешка при регистрация!';
@@ -26,6 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('registerError').textContent = 'Грешка при връзка със сървъра.';
     }
   });
+  
   function showToast(msg) {
     const toast = document.getElementById('toast');
     toast.textContent = msg;

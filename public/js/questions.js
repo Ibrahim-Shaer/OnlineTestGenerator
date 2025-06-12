@@ -46,7 +46,11 @@ document.addEventListener('DOMContentLoaded', async function() {
       // Multiple choice: dynamically adding answers
       const answersDiv = document.createElement('div');
       answersDiv.id = 'answersDiv';
-      answersDiv.innerHTML = '<label class="form-label">Възможни отговори:</label>';
+      answersDiv.innerHTML = '';
+      const label = document.createElement('label');
+      label.className = 'form-label mt-3 mb-2';
+      label.textContent = 'Възможни отговори:';
+      answersSection.appendChild(label);
       for (let i = 0; i < 2; i++) addAnswerInput(answersDiv);
       const addBtn = document.createElement('button');
       addBtn.type = 'button';
@@ -76,14 +80,14 @@ document.addEventListener('DOMContentLoaded', async function() {
   function addAnswerInput(answersDiv) {
     const idx = answersDiv.querySelectorAll('.answer-row').length;
     const row = document.createElement('div');
-    row.className = 'input-group mb-2 answer-row';
+    row.className = 'd-flex gap-2 align-items-center mb-2 answer-row';
     row.innerHTML = `
-      <div class="input-group-text">
-        <input type="checkbox" name="correctAnswer" class="form-check-input mt-0" title="Верният отговор" aria-label="Маркирай като верен отговор">
-      </div>
-      <input type="text" class="form-control" name="answerText" placeholder="Отговор ${idx + 1}" required aria-label="Отговор ${idx + 1}">
-      <button class="btn btn-outline-danger" type="button" aria-label="Премахни отговор"><i class="fa fa-trash"></i></button>
-    `;
+    <input type="checkbox" name="correctAnswer" class="form-check-input mt-0" title="Верният отговор" aria-label="Маркирай като верен отговор">
+    <input type="text" class="form-control" name="answerText" placeholder="Отговор ${idx + 1}" required aria-label="Отговор ${idx + 1}">
+    <button class="btn btn-outline-danger" type="button" aria-label="Премахни отговор">
+    <i class="fa fa-trash"></i>
+    </button>`;
+
     row.querySelector('button').onclick = () => row.remove();
     answersDiv.insertBefore(row, answersDiv.lastElementChild); 
   }
@@ -176,6 +180,26 @@ document.addEventListener('DOMContentLoaded', async function() {
         addCategoryError.textContent = 'Грешка при връзка със сървъра!';
         addCategoryError.style.display = '';
       }
+    });
+  }
+
+  // --- All questions (modal) ---
+  const showAllQuestionsBtn = document.getElementById('showAllQuestionsBtn');
+  if (showAllQuestionsBtn) {
+    showAllQuestionsBtn.addEventListener('click', async function() {
+      const res = await fetch('/questions/all');
+      const questions = await res.json();
+      const listDiv = document.getElementById('allQuestionsList');
+      listDiv.innerHTML = '';
+      if (!questions.length) {
+        listDiv.innerHTML = '<div class="text-muted">Няма въпроси.</div>';
+      } else {
+        listDiv.innerHTML = '<ul class="list-group">' +
+          questions.map(q => `<li class="list-group-item d-flex justify-content-between align-items-center">${q.question_text} <span class="text-muted">(${q.question_type})</span></li>`).join('') +
+          '</ul>';
+      }
+      const modal = new bootstrap.Modal(document.getElementById('allQuestionsModal'));
+      modal.show();
     });
   }
 }); 

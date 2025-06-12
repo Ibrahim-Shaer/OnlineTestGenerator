@@ -83,7 +83,7 @@ function setNavbarState({ loggedIn, user }) {
     if (testsNav) testsNav.style.display = '';
   }
 
-  // Hide questions/tests nav on index for non-teacher
+  // Hide questions/tests nav  for non-teacher
   if (path.endsWith('/index.html') || path === '/' || path === '/pages/') {
     if (!loggedIn || (user && user.role_name !== 'teacher' && user.role_name !== 'admin')) {
       if (questionsNav) questionsNav.style.display = 'none';

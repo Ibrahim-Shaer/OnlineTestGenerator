@@ -4,16 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Създаване на въпрос | Online Test Generator</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/flatly/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/styles/style.css"/>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 </head>
-<body>
+<body class="bg-light">
+
   <div id="navbar"></div>
+
   <div class="container my-4">
     <h1>Създаване на въпрос</h1>
+    <button class="btn btn-outline-secondary mb-3" id="showAllQuestionsBtn">Всички въпроси</button>
     <div id="role-error" class="alert alert-danger" style="display:none;"></div>
-    <form id="questionForm" style="display:none;">
+    <form id="questionForm">
       <div class="mb-3">
         <label for="category" class="form-label">Категория:</label>
         <div class="input-group">
@@ -55,6 +58,19 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Затвори</button>
           <button type="button" class="btn btn-primary" id="saveCategoryBtn">Запази</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="allQuestionsModal" tabindex="-1" aria-labelledby="allQuestionsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title" id="allQuestionsModalLabel"><i class="fa fa-list me-2"></i>Всички въпроси</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Затвори"></button>
+        </div>
+        <div class="modal-body">
+          <div id="allQuestionsList" style="max-height:400px;overflow-y:auto;"></div>
         </div>
       </div>
     </div>

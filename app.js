@@ -22,7 +22,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    //maxAge: 1000 * 60 // пример: 1 minute
+   
   }
 }));
 
@@ -60,22 +60,6 @@ app.get('/profile', (req, res) => {
     <a href="/auth/logout">Изход</a>
   `);
 });
-
-// app.get('/auth/status', (req, res) => {
-//   if (!req.session.user) {
-//     return res.json({ loggedIn: false });
-//   }
-//   res.json({
-//     loggedIn: true,
-//     user: {
-//       id: req.session.user.id,
-//       username: req.session.user.username,
-//       role: req.session.user.role,
-//       avatar: req.session.user.avatar || null   
-//     }
-//   });
-// });
-
 
 // Start the server 
 const PORT = process.env.PORT || 3000;

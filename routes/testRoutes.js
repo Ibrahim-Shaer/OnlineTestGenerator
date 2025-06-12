@@ -18,4 +18,7 @@ router.post('/', isAuthenticated, testController.createTest);
 // Returning all tests
 router.get('/', isAuthenticated, testController.getAllTests);
 
+// GET /tests/:id/questions - връща въпросите за даден тест
+router.get('/:id/questions', testController.getTestQuestions);
+
 module.exports = router;

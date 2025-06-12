@@ -26,8 +26,23 @@ exports.register = async (req, res) => {
       INSERT INTO users (username, email, password, role_id)
       VALUES (?, ?, ?, ?)
     `, [username, email, hashedPassword, role_id]);
-
+    const [newUserRows] = await pool.query(
+      `SELECT u.*, r.name as role_name, r.id as role_id
+       FROM users u
+       LEFT JOIN roles r ON u.role_id = r.id
+       WHERE u.email = ?`, [email]);
     
+    if (newUserRows.length > 0) {
+      const user = newUserRows[0];
+      req.session.user = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role_id: user.role_id,
+        role_name: user.role_name,
+        avatar: user.avatar || null
+      };
+    }
     res.json({ message: 'Registration successful' });
   } catch (err) {
     console.error(err);
@@ -117,7 +132,7 @@ exports.uploadAvatar = async (req, res) => {
 // Returns all students
 exports.getAllStudents = async (req, res) => {
   try {
-    // Вземи role_id за student
+    // Get role_id for student
     const [roleRows] = await pool.query('SELECT id FROM roles WHERE name = "student"');
     if (roleRows.length === 0) return res.json([]);
     const studentRoleId = roleRows[0].id;
@@ -151,7 +166,7 @@ exports.updateProfile = async (req, res) => {
       [username, email, passwordToSave, userId]
     );
 
-    // Вземи user с join към roles и презареди сесията
+    // Get user with join to roles and reload the session
     const [rows2] = await pool.query(
       `SELECT u.*, r.name as role_name, r.id as role_id
        FROM users u

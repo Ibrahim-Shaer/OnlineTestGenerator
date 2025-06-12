@@ -52,4 +52,22 @@ document.addEventListener('DOMContentLoaded', function() {
       reviewResult.innerHTML = `<div class="alert alert-danger">Грешка при записване на оценката!</div>`;
     });
   };
-}); 
+});
+
+let currentSort = null;
+
+function sortTests(tests) {
+  const sorted = [...tests];
+  switch (currentSort) {
+    case 'dateDesc':
+      return sorted.sort((a, b) => new Date(b.start_time) - new Date(a.start_time));
+    case 'dateAsc':
+      return sorted.sort((a, b) => new Date(a.start_time) - new Date(b.start_time));
+    case 'scoreDesc':
+      return sorted.sort((a, b) => (b.score || 0) - (a.score || 0));
+    case 'scoreAsc':
+      return sorted.sort((a, b) => (a.score || 0) - (b.score || 0));
+    default:
+      return sorted;
+  }
+}

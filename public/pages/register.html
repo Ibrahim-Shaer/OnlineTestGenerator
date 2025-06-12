@@ -4,37 +4,62 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Регистрация</title>
-  <link rel="stylesheet" href="/styles/style.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="/styles/style.css">
 </head>
-<body>
+<body class="bg-light">
   <div id="navbar"></div>
- 
-  <div class="container">
-    <h1>Регистрация</h1>
-    <form id="registerForm">
-      <label for="username">Потребителско име</label>
-      <input type="text" id="username" name="username" required>
-      <label for="email">Имейл</label>
-      <input type="email" id="email" name="email" required>
-      <label for="password">Парола</label>
-      <input type="password" id="password" name="password" required>
-      <label for="role">Роля</label>
-      <select id="role" name="role" required>
-        <option value="student">Ученик</option>
-        <option value="teacher">Учител</option>
-      </select>
-      <button type="submit" class="btn" id="registerSubmitBtn">Регистрация</button>
-    </form>
-    <p>Вече имате акаунт? <a href="/pages/login.html">Влезте</a></p>
-    <div id="registerError" style="color:red;display:none;"></div>
+
+
+  <div class="container d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+    <div class="w-100" style="max-width: 480px;">
+      <div class="card shadow-sm p-4">
+        <h2 class="mb-4 text-center">Регистрация</h2>
+        <form id="registerForm">
+          <div class="mb-3">
+            <label for="username" class="form-label">Потребителско име</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Имейл</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Парола</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+          </div>
+          <div class="mb-4">
+            <label for="role" class="form-label">Роля</label>
+            <select class="form-select" id="role" name="role" required>
+              <option value="student">Ученик</option>
+              <option value="teacher">Учител</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary w-100" id="registerSubmitBtn">Регистрация</button>
+        </form>
+
+        <div class="text-center mt-3">
+          <p class="mb-1">Вече имате акаунт?</p>
+          <a href="/pages/login.html" class="btn btn-outline-primary btn-sm">Вход</a>
+        </div>
+
+        <div id="registerError" class="text-danger mt-3" style="display:none;"></div>
+      </div>
+    </div>
   </div>
-  <footer>
+
+  <footer class="text-center mt-5 text-muted">
     <p>&copy; 2025 OnlineTestGenerator</p>
   </footer>
-  <div id="toast" style="display:none;position:fixed;top:10px;right:10px;background:#4caf50;color:#fff;padding:1rem;border-radius:4px;z-index:9999;">Успешна регистрация!</div>
+
+  <!-- Toast -->
+  <div id="toast" style="display:none;position:fixed;top:10px;right:10px;background:#4caf50;color:#fff;padding:1rem;border-radius:4px;z-index:9999;">
+    Успешна регистрация!
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/js/register.js"></script>
   <script src="/js/navbar.js"></script>
 </body>
+
 </html>

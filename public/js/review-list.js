@@ -1,6 +1,23 @@
 document.addEventListener('DOMContentLoaded', function() {
   const listDiv = document.getElementById('assignedTestsList');
   let allTests = [];
+  let currentSort = null;
+
+  function sortTests(tests) {
+    const sorted = [...tests];
+    switch (currentSort) {
+      case 'dateDesc':
+        return sorted.sort((a, b) => new Date(b.start_time) - new Date(a.start_time));
+      case 'dateAsc':
+        return sorted.sort((a, b) => new Date(a.start_time) - new Date(b.start_time));
+      case 'scoreDesc':
+        return sorted.sort((a, b) => (b.score || 0) - (a.score || 0));
+      case 'scoreAsc':
+        return sorted.sort((a, b) => (a.score || 0) - (b.score || 0));
+      default:
+        return sorted;
+    }
+  }
 
   function renderTable(tests) {
     if (!tests.length) {
@@ -49,17 +66,53 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       return studentMatch && testMatch && statusMatch;
     });
-    renderTable(filtered);
+    renderTable(sortTests(filtered));
   }
+
+  function highlightSortButton(activeId) {
+    const allSortButtons = document.querySelectorAll('.sort-btn');
+    allSortButtons.forEach(btn => {
+      btn.classList.remove('btn-primary');
+      btn.classList.add('btn-outline-secondary');
+    });
+  
+    const activeBtn = document.getElementById(activeId);
+    if (activeBtn) {
+      activeBtn.classList.remove('btn-outline-secondary');
+      activeBtn.classList.add('btn-primary');
+    }
+  }
+  
 
   fetch('/assigned-tests/assigned-by-me')
     .then(res => res.json())
     .then(tests => {
       allTests = tests;
-      renderTable(allTests);
+      renderTable(sortTests(allTests));
 
       document.getElementById('searchStudent').addEventListener('input', filterAndRender);
       document.getElementById('searchTest').addEventListener('input', filterAndRender);
       document.getElementById('statusFilter').addEventListener('change', filterAndRender);
+      document.getElementById('sortByDateDesc').addEventListener('click', () => {
+        currentSort = 'dateDesc';
+        highlightSortButton('sortByDateDesc');
+        filterAndRender();
+      });
+      document.getElementById('sortByDateAsc').addEventListener('click', () => {
+        currentSort = 'dateAsc';  
+        highlightSortButton('sortByDateAsc');
+        filterAndRender();
+      });
+      document.getElementById('sortByScoreDesc').addEventListener('click', () => {
+        currentSort = 'scoreDesc';
+        highlightSortButton('sortByScoreDesc');
+        filterAndRender();
+      });
+      document.getElementById('sortByScoreAsc').addEventListener('click', () => {
+        currentSort = 'scoreAsc';
+        highlightSortButton('sortByScoreAsc');
+        filterAndRender();
+      });
+      
     });
 }); 

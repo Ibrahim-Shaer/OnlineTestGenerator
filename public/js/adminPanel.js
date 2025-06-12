@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const usersTable = document.getElementById('usersTable');
   let editingUserId = null;
 
-  // Bootstrap modals
+  // Bootstrap modals for the user modal
   const userModal = new bootstrap.Modal(document.getElementById('userModal'));
   const userForm = document.getElementById('userForm');
   const userFormMsg = document.getElementById('userFormMsg');
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const userFormSubmitBtn = document.getElementById('userFormSubmitBtn');
   const userRoleSelect = document.getElementById('userRole');
 
-  // Зареждане на роли за селекта
+  // Loading roles for the select
   function loadRoles() {
     fetch('/admin/roles')
       .then(res => res.json())

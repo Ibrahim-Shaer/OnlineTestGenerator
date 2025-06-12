@@ -4,12 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Тестове</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.0/dist/flatly/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/styles/style.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
 </head>
-<body>
+<body class="bg-light">
+  
   <div id="navbar"></div>
+
   <div class="container my-4">
     <div class="row justify-content-center">
       <div class="col-lg-8 col-md-10 col-12">
@@ -33,21 +35,11 @@
                   <label for="testDuration" class="form-label">Време (минути)</label>
                   <input type="number" id="testDuration" class="form-control" placeholder="Време (минути)" min="1" value="30" required>
                 </div>
-                <div class="mb-3">
-                  <label for="randomCategory" class="form-label">Категория за random въпроси:</label>
-                  <select id="randomCategory" class="form-select"></select>
-                </div>
-                <div class="mb-3">
-                  <label for="randomCount" class="form-label">Брой random въпроси:</label>
-                  <input type="number" id="randomCount" class="form-control" min="1" value="1" />
-                </div>
-                <div class="mb-3">
-                  <button type="button" class="btn btn-outline-success w-100" id="addRandomQuestionsBtn">Добави random въпроси</button>
-                  <div id="randomQuestionsError" class="text-danger mt-2" style="display:none"></div>
-                </div>
+
                 <div class="mb-3">
                   <button type="button" class="btn btn-outline-primary w-100" id="openQuestionsModalBtn">Избери въпроси</button>
                   <div id="selectedQuestionsPreview" class="mt-2"></div>
+                  <input type="hidden" id="selectedQuestionsInput" name="selectedQuestions">
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Създай</button>
               </form>
@@ -126,6 +118,20 @@
         <div class="modal-footer bg-light">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa fa-times me-1"></i>Затвори</button>
           <button type="button" class="btn btn-primary" id="saveQuestionsSelectionBtn"><i class="fa fa-check me-1"></i>Запази избора</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal for test questions -->
+  <div class="modal fade" id="testQuestionsModal" tabindex="-1" aria-labelledby="testQuestionsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-secondary text-white">
+          <h5 class="modal-title" id="testQuestionsModalLabel"><i class="fa fa-question me-2"></i>Въпроси в теста</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Затвори"></button>
+        </div>
+        <div class="modal-body">
+          <div id="testQuestionsList" style="max-height:400px;overflow-y:auto;"></div>
         </div>
       </div>
     </div>

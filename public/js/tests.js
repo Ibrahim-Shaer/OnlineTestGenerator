@@ -44,19 +44,19 @@ document.addEventListener('DOMContentLoaded', async function() {
       const title = document.getElementById('testTitle').value;
       const description = document.getElementById('testDescription').value;
       const duration = document.getElementById('testDuration').value;
-      const selectedQuestions = Array.from(document.querySelectorAll('input[name="questions"]:checked')).map(cb => cb.value);
-
+      let selectedQuestions = [];
+      try {
+        selectedQuestions = JSON.parse(document.getElementById('selectedQuestionsInput').value || '[]');
+      } catch { selectedQuestions = []; }
       if (!selectedQuestions.length) {
         alert('Избери поне един въпрос!');
         return;
       }
-
       const res = await fetch('/tests', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, description, duration, questions: selectedQuestions })
       });
-
       if (res.ok) {
         alert('Тестът е създаден успешно!');
         location.reload();
@@ -118,13 +118,13 @@ document.addEventListener('DOMContentLoaded', async function() {
             <td>${test.questionCount}</td>
             <td>${test.assignedTo || '-'}</td>
             <td>
+              <button class="btn btn-info btn-sm view-test-questions-btn" data-id="${test.id}"><i class="fa fa-question"></i> Въпроси</button>
               ${isTeacherOrAdmin ? `<button class="btn btn-sm btn-warning assign-btn" data-id="${test.id}">Възложи</button>` : ''}
             </td>
           `;
           tbody.appendChild(tr);
         });
-
-        
+        addTestQuestionsButtons();
         if (isTeacherOrAdmin) {
           document.querySelectorAll('.assign-btn').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -133,7 +133,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             });
           });
         }
-
         if (!isTeacherOrAdmin) {
           document.getElementById('assignHeader').style.display = 'none';
         }
@@ -391,6 +390,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   document.getElementById('saveQuestionsSelectionBtn').addEventListener('click', function() {
     renderSelectedQuestionsPreview();
+    // Записваме избраните въпроси в скритото поле
+    document.getElementById('selectedQuestionsInput').value = JSON.stringify(selectedQuestions);
     const modal = bootstrap.Modal.getInstance(document.getElementById('questionsModal'));
     modal.hide();
   });
@@ -407,6 +408,45 @@ document.addEventListener('DOMContentLoaded', async function() {
       if (q) previewDiv.innerHTML += `<li>${q.question_text} <span class="text-muted">(${q.question_type})</span></li>`;
     });
     previewDiv.innerHTML += '</ul>';
+  }
+
+  // --- Всички въпроси (модал) ---
+  document.getElementById('showAllQuestionsBtn').addEventListener('click', async function() {
+    const res = await fetch('/questions/all');
+    const questions = await res.json();
+    const listDiv = document.getElementById('allQuestionsList');
+    listDiv.innerHTML = '';
+    if (!questions.length) {
+      listDiv.innerHTML = '<div class="text-muted">Няма въпроси.</div>';
+    } else {
+      listDiv.innerHTML = '<ul class="list-group">' +
+        questions.map(q => `<li class="list-group-item d-flex justify-content-between align-items-center">${q.question_text} <span class="text-muted">(${q.question_type})</span></li>`).join('') +
+        '</ul>';
+    }
+    const modal = new bootstrap.Modal(document.getElementById('allQuestionsModal'));
+    modal.show();
+  });
+
+  // --- Въпроси в теста (модал) ---
+  function addTestQuestionsButtons() {
+    document.querySelectorAll('.view-test-questions-btn').forEach(btn => {
+      btn.addEventListener('click', async function() {
+        const testId = this.getAttribute('data-id');
+        const res = await fetch(`/tests/${testId}/questions`);
+        const questions = await res.json();
+        const listDiv = document.getElementById('testQuestionsList');
+        listDiv.innerHTML = '';
+        if (!questions.length) {
+          listDiv.innerHTML = '<div class="text-muted">Няма въпроси в този тест.</div>';
+        } else {
+          listDiv.innerHTML = '<ul class="list-group">' +
+            questions.map(q => `<li class="list-group-item d-flex justify-content-between align-items-center">${q.question_text} <span class="text-muted">(${q.question_type})</span></li>`).join('') +
+            '</ul>';
+        }
+        const modal = new bootstrap.Modal(document.getElementById('testQuestionsModal'));
+        modal.show();
+      });
+    });
   }
 });
 

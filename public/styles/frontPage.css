@@ -1,0 +1,24 @@
+body {
+    background: #f5f6fa;
+  }
+  .hero-section {
+    min-height: 420px;
+    background: linear-gradient(90deg, #eaf2fb 0%, #c9e7fa 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-section::before {
+    display: none;
+  }
+  .hero-logo {
+    width: 120px;
+    height: 120px;
+    display: block;
+    margin: 0 auto;
+  }
+  .navbar-brand img {
+    height: 38px;
+    width: auto;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
