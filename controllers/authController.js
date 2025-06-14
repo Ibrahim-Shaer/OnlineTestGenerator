@@ -26,6 +26,8 @@ exports.register = async (req, res) => {
       INSERT INTO users (username, email, password, role_id)
       VALUES (?, ?, ?, ?)
     `, [username, email, hashedPassword, role_id]);
+    
+    
     const [newUserRows] = await pool.query(
       `SELECT u.*, r.name as role_name, r.id as role_id
        FROM users u
@@ -43,10 +45,14 @@ exports.register = async (req, res) => {
         avatar: user.avatar || null
       };
     }
-    res.json({ message: 'Registration successful' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Internal server error' });
+    return res
+    .status(201)
+    .json({ message: 'Registration successful' });
+} catch (err) {
+  console.error(err);
+  return res
+    .status(500)
+    .json({ message: 'Internal server error' });
   }
 };
 
@@ -77,10 +83,14 @@ exports.login = async (req, res) => {
       email: user.email
     };
 
-    res.json({ message: 'Login successful', role: user.role_name });
+    return res
+    .status(200)
+    .json({ message: 'Login successful', role: user.role_name });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Internal server error' });
+    return res
+    .status(500)
+    .json({ message: 'Internal server error' });
   }
 };
 
@@ -90,7 +100,9 @@ exports.logout = (req, res) => {
       console.error(err);
       return res.status(500).json({ message: 'Error while logging out' });
     }
-    res.json({ success: true });
+    return res
+    .status(200)
+    .json({ success: true });
   });
 };
 
@@ -122,10 +134,14 @@ exports.uploadAvatar = async (req, res) => {
 
     console.log('Session after avatar upload:', req.session.user);
 
-    res.json({ message: 'Avatar uploaded successfully', avatar: avatarPath });
+    return res
+    .status(200)
+    .json({ message: 'Avatar uploaded successfully', avatar: avatarPath });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    return res
+    .status(500)
+    .json({ message: 'Server error' });
   }
 };
 
@@ -134,15 +150,24 @@ exports.getAllStudents = async (req, res) => {
   try {
     // Get role_id for student
     const [roleRows] = await pool.query('SELECT id FROM roles WHERE name = "student"');
-    if (roleRows.length === 0) return res.json([]);
+    // if (roleRows.length === 0) return res.json([]);
+    if (roleRows.length === 0) {
+      return res
+        .status(200)
+        .json([]);
+    }
     const studentRoleId = roleRows[0].id;
     const [rows] = await pool.query(
       'SELECT id, username, email FROM users WHERE role_id = ?', [studentRoleId]
     );
-    res.json(rows);
+    return res
+    .status(200)
+    .json(rows);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    return res
+    .status(500)
+    .json({ message: 'Server error' });
   }
 };
 
@@ -184,10 +209,14 @@ exports.updateProfile = async (req, res) => {
       };
     }
 
-    res.json({ message: 'Данните са обновени успешно!' });
+    return res
+    .status(200)
+    .json({ message: 'Данните са обновени успешно!' });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Вътрешна грешка на сървъра!' });
+    return res
+    .status(500)
+    .json({ message: 'Вътрешна грешка на сървъра!' });
   }
 };
 
@@ -195,9 +224,13 @@ exports.updateProfile = async (req, res) => {
 exports.status = (req, res) => {
   if (req.session && req.session.user) {
     const { id, username, email, avatar, role_id, role_name } = req.session.user;
-    res.json({ loggedIn: true, user: { id, username, email, avatar, role_id, role_name } });
+    return res
+    .status(200)
+    .json({ loggedIn: true, user: { id, username, email, avatar, role_id, role_name } });
   } else {
-    res.json({ loggedIn: false });
+    return res
+    .status(200)
+    .json({ loggedIn: false });
   }
 };
 
