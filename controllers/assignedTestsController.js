@@ -65,12 +65,12 @@ exports.getAssignedTestsByTeacher = async (req, res) => {
 };
 
 // Get questions (with answers) for a given assigned test
+// Get questions (with answers) for a given assigned test
 exports.getTestQuestions = async (req, res) => {
   const assigned_id = req.params.assignedId;
   const student_id = req.session.user.id;
 
   try {
-    // Get the specific assignment
     const [assigned] = await pool.query(
       'SELECT * FROM assigned_tests WHERE id = ? AND student_id = ?',
       [assigned_id, student_id]
@@ -81,7 +81,12 @@ exports.getTestQuestions = async (req, res) => {
 
     const test_id = assigned[0].test_id;
 
-    // Get questions for this test
+    // 🔥 Get test meta (includes duration)
+    const [testMeta] = await pool.query(
+      'SELECT duration FROM tests WHERE id = ?',
+      [test_id]
+    );
+
     const [questions] = await pool.query(
       `SELECT q.id, q.question_text, q.question_type
        FROM questions q
@@ -100,7 +105,13 @@ exports.getTestQuestions = async (req, res) => {
       }
     }
 
-    res.json({ questions });
+    // 🔁 Добавяме duration в `assigned`
+    const responseAssigned = {
+      ...assigned[0],
+      duration: testMeta[0]?.duration || 0,
+    };
+
+    res.json({ questions, assigned: responseAssigned });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
@@ -245,3 +256,4 @@ exports.manualReviewAssignedTest = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+

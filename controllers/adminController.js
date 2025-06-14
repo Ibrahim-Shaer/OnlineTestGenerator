@@ -26,7 +26,7 @@ exports.createUser = async (req, res) => {
     if (exists.length > 0) {
       return res.status(400).json({ message: 'Този имейл вече съществува.' });
     }
-    // Вземи role_id по име
+    // Get role_id by name
     const [roleRows] = await pool.query('SELECT id FROM roles WHERE name = ?', [role]);
     if (roleRows.length === 0) {
       return res.status(400).json({ message: 'Невалидна роля!' });
@@ -53,7 +53,7 @@ exports.updateUser = async (req, res) => {
     if (password) {
       passwordToSave = await bcrypt.hash(password, 10);
     }
-    // Вземи role_id по име
+    // Get role_id by name
     const [roleRows] = await pool.query('SELECT id FROM roles WHERE name = ?', [role]);
     if (roleRows.length === 0) {
       return res.status(400).json({ message: 'Невалидна роля!' });
@@ -80,7 +80,7 @@ exports.deleteUser = async (req, res) => {
 // Returns statistics for the admin panel
 exports.getStats = async (req, res) => {
   try {
-    // Вземи role_id за teacher и admin
+    // Get role_id for teacher and admin
     const [[teacherRole]] = await pool.query('SELECT id FROM roles WHERE name = "teacher"');
     const [[adminRole]] = await pool.query('SELECT id FROM roles WHERE name = "admin"');
     const [[users]] = await pool.query('SELECT COUNT(*) as cnt FROM users');
@@ -102,7 +102,7 @@ exports.getStats = async (req, res) => {
   }
 };
 
-// Връща всички роли
+// Returns all roles
 exports.getAllRoles = async (req, res) => {
   try {
     const [roles] = await pool.query('SELECT id, name FROM roles');

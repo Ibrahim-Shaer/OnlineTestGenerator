@@ -93,6 +93,13 @@ h1, h2, h3, h4, h5, h6 {
   overflow-y: auto;
 }
 
+#timerDisplay {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+}
+
 /* Input group alignment */
 #dynamicQuestionsSection .form-select,
 #dynamicQuestionsSection .form-control,

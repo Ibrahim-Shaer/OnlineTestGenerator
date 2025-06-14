@@ -4,13 +4,13 @@ const testController = require('../controllers/testController');
 const { isAuthenticated } = require('../middleware/auth');
 
 // Generating a new test 
-router.post('/generate', isAuthenticated, testController.generateTest);
+/*router.post('/generate', isAuthenticated, testController.generateTest);
 
 // Saving the answers
-router.post('/submit', isAuthenticated, testController.submitTestAnswers);
+/*router.post('/submit', isAuthenticated, testController.submitTestAnswers);
 
 // Viewing the result
-router.get('/:testId', isAuthenticated, testController.getTestResult);
+router.get('/:testId', isAuthenticated, testController.getTestResult);*/
 
 // Creating a test with selected questions
 router.post('/', isAuthenticated, testController.createTest);
@@ -18,7 +18,7 @@ router.post('/', isAuthenticated, testController.createTest);
 // Returning all tests
 router.get('/', isAuthenticated, testController.getAllTests);
 
-// GET /tests/:id/questions - връща въпросите за даден тест
+// GET /tests/:id/questions - returns the questions for a given test
 router.get('/:id/questions', testController.getTestQuestions);
 
 module.exports = router;

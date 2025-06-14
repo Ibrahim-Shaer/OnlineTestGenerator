@@ -1,7 +1,7 @@
 const pool = require('../config/db');
 
 //Generating a new test
-exports.generateTest = async (req, res) => {
+/*exports.generateTest = async (req, res) => {
   try {
     const { category_id, questionCount } = req.body;
     const student_id = req.session.user.id;
@@ -29,10 +29,10 @@ exports.generateTest = async (req, res) => {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
   }
-};
+};*/
 
 //Saving the answers
-exports.submitTestAnswers = async (req, res) => {
+/*exports.submitTestAnswers = async (req, res) => {
   try {
     const { testId, answers } = req.body; //Getting testId and answers from body  
     // 1. For each answer, we write in test_answers
@@ -74,10 +74,10 @@ exports.submitTestAnswers = async (req, res) => {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
   }
-};
+};*/
 
 //Viewing the result
-exports.getTestResult = async (req, res) => {
+/*exports.getTestResult = async (req, res) => {
   try {
     const testId = req.params.testId;
     
@@ -98,7 +98,7 @@ exports.getTestResult = async (req, res) => {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
   }
-};
+};*/
 
 // Creating a test with selected questions
 exports.createTest = async (req, res) => {
@@ -175,3 +175,6 @@ exports.getTestQuestions = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+
+  
