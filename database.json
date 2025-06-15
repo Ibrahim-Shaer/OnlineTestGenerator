@@ -1,19 +1,9 @@
 {
-  "defaultEnv": "dev",
   "dev": {
     "driver": "mysql",
-    "host": "${DB_HOST}",
-    "user": "${DB_USER}",
-    "password": "${DB_PASSWORD}",
-    "database": "${DB_NAME}",
-    "port": "${DB_PORT}"
-  },
-  "prod": {
-    "driver": "mysql",
-    "host": "${DB_HOST}",
-    "user": "${DB_USER}",
-    "password": "${DB_PASSWORD}",
-    "database": "${DB_NAME}",
-    "port": "${DB_PORT}"
+    "host": "localhost",
+    "user": "root",
+    "password": "",
+    "database": "online_test_db"
   }
 }
