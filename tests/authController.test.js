@@ -1,4 +1,4 @@
-// tests/authController.test.js
+
 const authCtrl = require('../controllers/authController');
 const pool = require('../config/db');
 const bcrypt = require('bcrypt');

@@ -1,4 +1,4 @@
-// public/js/solve-test.js
+
 document.addEventListener('DOMContentLoaded', function() {
   const urlParams = new URLSearchParams(window.location.search);
   const assignedId = urlParams.get('assigned_id');
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
     return;
   }
 
-  // Зареждаме въпросите и данните за теста
+  // loading questions
   fetch(`/assigned-tests/${assignedId}/questions`)
     .then(res => res.json())
     .then(data => {
@@ -33,13 +33,13 @@ document.addEventListener('DOMContentLoaded', function() {
           if (timeLeft <= 0) {
             clearInterval(countdownInterval);
             resultDiv.innerHTML = '<div class="alert alert-warning">Времето изтече! Тестът се предава автоматично.</div>';
-            submitAnswers(); // автоматично подаване
+            submitAnswers(); 
           }
           timeLeft--;
         }, 1000);
       }
 
-      // --- Рендер на въпросите ---
+      // --- Render the questions ---
       data.questions.forEach((q, idx) => {
         let html = `<div class="mb-3">
                       <label class="form-label">${idx+1}. ${q.question_text}</label>`;
@@ -77,13 +77,13 @@ document.addEventListener('DOMContentLoaded', function() {
       resultDiv.innerHTML = '<div class="alert alert-danger">Грешка при зареждане на теста.</div>';
     });
 
-  // Хендлър за ръчно подаване
+  
   form.addEventListener('submit', function(e) {
     e.preventDefault();
     submitAnswers();
   });
 
-  // Функция за подаване на отговорите
+  
   function submitAnswers() {
     const formData = new FormData(form);
     const answers = [];

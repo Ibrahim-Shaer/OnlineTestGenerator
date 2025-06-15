@@ -1,6 +1,8 @@
 module.exports = {
-    testEnvironment: 'node',
-    clearMocks: true,
-    coverageDirectory: 'coverage',
-  };
-  
+  testEnvironment: 'jsdom',
+  setupFiles: ['<rootDir>/jest.setup.js'],
+  clearMocks: true,
+  coverageDirectory: 'coverage',
+ 
+};
+
