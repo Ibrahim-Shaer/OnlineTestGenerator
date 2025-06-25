@@ -20,12 +20,14 @@
     <div class="card">
       <h2>Потребители</h2>
       <button class="btn btn-primary mb-2" id="openAddUserModalBtn">Добави потребител</button>
-      <table style="width:100%;border-collapse:collapse;">
-        <thead>
-          <tr><th>Потребителско име</th><th>Имейл</th><th>Роля</th><th>Действия</th></tr>
-        </thead>
-        <tbody id="usersTable"></tbody>
-      </table>
+      <div class="admin-users-table-wrapper">
+        <table style="width:100%;border-collapse:collapse;">
+          <thead>
+            <tr><th>Потребителско име</th><th>Имейл</th><th>Роля</th><th>Действия</th></tr>
+          </thead>
+          <tbody id="usersTable"></tbody>
+        </table>
+      </div>
     </div>
     <!-- Modal for creating/editing a user -->
     <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">

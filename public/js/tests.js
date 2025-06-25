@@ -1,8 +1,11 @@
+
+
 document.addEventListener('DOMContentLoaded', async function() {
   // Checking role
   const res = await fetch('/auth/status');
   const data = await res.json();
-  if (!data.loggedIn || (data.user.role_name !== 'teacher' && data.user.role_name !== 'admin')) {
+ 
+  if (!data.loggedIn || (data.user.role_id != 1 && data.user.role_id != 2)) {
     document.getElementById('role-error').style.display = '';
     document.getElementById('role-error').textContent = 'Нямате права за достъп до тази страница!';
     document.getElementById('testsTable').style.display = 'none';
@@ -15,14 +18,24 @@ document.addEventListener('DOMContentLoaded', async function() {
     e.preventDefault();
     const formDiv = document.getElementById('createTestFormDiv');
     formDiv.style.display = formDiv.style.display === 'none' ? '' : 'none';
-    if (formDiv.style.display !== 'none') loadQuestions();
+    if (formDiv.style.display !== 'none') {
+      loadQuestions();
+
+      const btn = document.getElementById('openQuestionsModalBtn');
+      if (btn) {
+        // Remove all old listeners before adding a new one
+        btn.replaceWith(btn.cloneNode(true));
+        const newBtn = document.getElementById('openQuestionsModalBtn');
+        newBtn.addEventListener('click', openQuestionsModalHandler);
+      }
+    }
   });
 
   // Loading questions for the form
   async function loadQuestions() {
     const res = await fetch('/questions/all');
     const questions = await res.json();
-    const questionsList = document.getElementById('questionsList');
+    const questionsList = document.getElementById('modalQuestionsList');
     questionsList.innerHTML = '';
     questions.forEach(q => {
       questionsList.innerHTML += `
@@ -101,7 +114,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   fetch('/auth/status')
     .then(res => res.json())
     .then(status => {
-      isTeacherOrAdmin = status.loggedIn && (status.user.role_name === 'teacher' || status.user.role_name === 'admin');
+      isTeacherOrAdmin = status.loggedIn && (status.user.role_id === 1 || status.user.role_id === 2);
       loadTests();
     });
 
@@ -176,7 +189,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
     errorDiv.style.display = 'none';
     errorDiv.textContent = '';
-    const questionsList = document.getElementById('questionsList');
+    const questionsList = document.getElementById('modalQuestionsList');
     const catSelect = document.getElementById('randomCategory');
     const selectedCatName = catSelect.options[catSelect.selectedIndex].textContent;
     // Uncheck all questions from this category
@@ -370,19 +383,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   // When opening the modal – load both sections
   const openQuestionsModalBtn = document.getElementById('openQuestionsModalBtn');
   if (openQuestionsModalBtn) {
-    openQuestionsModalBtn.addEventListener('click', async function() {
-      await loadModalCategories();
-      await loadModalQuestions();
-      await loadDynamicCategories();
-      document.getElementById('modalSearchQuestion').value = '';
-      document.getElementById('modalCategoryFilter').value = '';
-      renderModalQuestions();
-      showManualMode();
-      renderSelectedQuestionsEdit();
-      selectedQuestionsEditSection.style.display = selectedQuestions.length ? '' : 'none';
-      const modal = new bootstrap.Modal(document.getElementById('questionsModal'));
-      modal.show();
-    });
+    openQuestionsModalBtn.addEventListener('click', openQuestionsModalHandler);
   }
 
   document.getElementById('modalSearchQuestion').addEventListener('input', renderModalQuestions);
@@ -390,7 +391,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   document.getElementById('saveQuestionsSelectionBtn').addEventListener('click', function() {
     renderSelectedQuestionsPreview();
-    // Записваме избраните въпроси в скритото поле
+    // Save the selected questions in the hidden field
     document.getElementById('selectedQuestionsInput').value = JSON.stringify(selectedQuestions);
     const modal = bootstrap.Modal.getInstance(document.getElementById('questionsModal'));
     modal.hide();
@@ -410,7 +411,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     previewDiv.innerHTML += '</ul>';
   }
 
-  // --- Всички въпроси (модал) ---
+  // --- All questions (modal) ---
   document.getElementById('showAllQuestionsBtn').addEventListener('click', async function() {
     const res = await fetch('/questions/all');
     const questions = await res.json();
@@ -427,7 +428,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     modal.show();
   });
 
-  // --- Въпроси в теста (модал) ---
+  // --- Questions in the test (modal) ---
   function addTestQuestionsButtons() {
     document.querySelectorAll('.view-test-questions-btn').forEach(btn => {
       btn.addEventListener('click', async function() {
@@ -447,6 +448,22 @@ document.addEventListener('DOMContentLoaded', async function() {
         modal.show();
       });
     });
+  }
+
+  // Премествам handler-а тук, за да има достъп до горните функции
+  async function openQuestionsModalHandler() {
+    console.log('Бутонът за модал е натиснат!');
+    await loadModalCategories();
+    await loadModalQuestions();
+    await loadDynamicCategories();
+    document.getElementById('modalSearchQuestion').value = '';
+    document.getElementById('modalCategoryFilter').value = '';
+    renderModalQuestions();
+    showManualMode();
+    renderSelectedQuestionsEdit();
+    selectedQuestionsEditSection.style.display = selectedQuestions.length ? '' : 'none';
+    const modal = new bootstrap.Modal(document.getElementById('questionsModal'));
+    modal.show();
   }
 });
 

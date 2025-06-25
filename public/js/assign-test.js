@@ -77,6 +77,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const student_ids = selectedStudents;
     const start_time = document.getElementById('startTime').value;
     const end_time = document.getElementById('endTime').value;
+    const alertDiv = document.getElementById('assignTestAlert');
+    alertDiv.innerHTML = '';
+    // Validate start time
+    const now = new Date();
+    const startDate = new Date(start_time);
+    if (startDate < now) {
+      alertDiv.innerHTML = '<div class="alert alert-danger">Не може да изберете вече минала дата за стартиране на теста!</div>';
+      return;
+    }
     fetch('/assigned-tests', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

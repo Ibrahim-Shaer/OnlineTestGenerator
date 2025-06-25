@@ -13,7 +13,6 @@
   <div class="container my-4">
     <h1 class="mb-4">Възлагане на тест</h1>
     <form id="assignTestForm" class="card card-body">
-      <div id="assignTestAlert"></div>
       <div class="mb-3">
         <label for="testSelect" class="form-label">Тест:</label>
         <select id="testSelect" name="test_id" class="form-select" required></select>
@@ -32,6 +31,7 @@
         <label for="endTime" class="form-label">Край:</label>
         <input type="datetime-local" id="endTime" name="end_time" class="form-control" required>
       </div>
+      <div id="assignTestAlert"></div>
       <button type="submit" class="btn btn-primary w-100">Възложи тест</button>
     </form>
     <div id="result" class="mt-3"></div>

@@ -98,6 +98,8 @@ document.addEventListener('DOMContentLoaded', async function() {
   // Sending the question to the backend
   form.addEventListener('submit', async function(e) {
     e.preventDefault();
+    const errorDiv = document.getElementById('questionFormError');
+    errorDiv.textContent = '';
     const questionData = {
       category_id: categorySelect.value,
       question_type: questionType.value,
@@ -106,11 +108,17 @@ document.addEventListener('DOMContentLoaded', async function() {
     };
     if (questionType.value === 'multiple_choice') {
       const answers = [];
+      let hasCorrect = false;
       document.querySelectorAll('.answer-row').forEach(row => {
         const text = row.querySelector('input[name="answerText"]').value;
         const isCorrect = row.querySelector('input[name="correctAnswer"]').checked;
+        if (isCorrect) hasCorrect = true;
         answers.push({ answer_text: text, is_correct: isCorrect });
       });
+      if (!hasCorrect) {
+        errorDiv.textContent = 'Моля, изберете кой е верният отговор!';
+        return;
+      }
       questionData.answers = answers;
     } else if (questionType.value === 'true_false') {
       questionData.correct = document.querySelector('input[name="tfAnswer"]:checked').value === 'true' ? "Да" : "Не";
@@ -129,10 +137,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         form.reset();
         renderAnswers();
       } else {
-        alert(result.message || 'Грешка при създаване на въпрос!');
+        errorDiv.textContent = result.message || 'Грешка при създаване на въпрос!';
       }
     } catch (err) {
-      alert('Грешка при връзка със сървъра!');
+      errorDiv.textContent = 'Грешка при връзка със сървъра!';
     }
   });
 
