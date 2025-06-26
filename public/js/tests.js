@@ -467,8 +467,8 @@ document.addEventListener('DOMContentLoaded', async function() {
   }
 });
 
-//function for deletion (must be implemented in the backend)
-function deleteTest(id) {
+//function for deletion 
+/*function deleteTest(id) {
   if (confirm('Are you sure you want to delete this test?')) {
     fetch(`/tests/${id}`, { method: 'DELETE' })
       .then(res => {
@@ -476,4 +476,4 @@ function deleteTest(id) {
         else alert('Грешка при изтриване!');
       });
   }
-}
+}*/
